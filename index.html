@@ -1,0 +1,3908 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#72142d">
+<title>CONNECTION TANZANIA</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+:root{
+  --primary:#72142d;
+  --dark:#4b0b1d;
+  --gold:#d6a23a;
+  --bg:#f7f4f1;
+  --white:#ffffff;
+  --text:#24171b;
+  --muted:#8a777c;
+  --line:#eadfe1;
+  --soft:#f8eef1;
+  --shadow:0 7px 24px rgba(65,20,31,.08);
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  padding-bottom:78px;
+  transition:.25s ease;
+}
+
+button,
+input,
+textarea,
+select{
+  font-family:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+/* ================= DARK MODE ================= */
+
+body.dark-mode{
+  --bg:#120b0e;
+  --white:#1d1417;
+  --text:#f7eef0;
+  --muted:#b9a7ac;
+  --line:#3a292e;
+  --soft:#2a1b20;
+  --shadow:0 7px 24px rgba(0,0,0,.35);
+}
+
+body.dark-mode .top-header,
+body.dark-mode .bottom-nav{
+  background:#1d1417;
+  border-color:#3a292e;
+}
+
+body.dark-mode .card,
+body.dark-mode .feature-card,
+body.dark-mode .support-card,
+body.dark-mode .modal-box{
+  background:#1d1417;
+  color:#f7eef0;
+}
+
+body.dark-mode .card-title,
+body.dark-mode .card-description,
+body.dark-mode .card-location{
+  color:#f7eef0;
+}
+
+body.dark-mode .search-wrap input,
+body.dark-mode .payment-method,
+body.dark-mode input,
+body.dark-mode textarea,
+body.dark-mode select{
+  background:#26191d;
+  color:#fff;
+  border-color:#49343a;
+}
+
+body.dark-mode .category,
+body.dark-mode .location-chip{
+  background:#26191d;
+  color:#eadde0;
+  border-color:#49343a;
+}
+
+body.dark-mode .category.active,
+body.dark-mode .location-chip.active{
+  background:var(--primary);
+  color:#fff;
+}
+
+body.dark-mode .card-phone{
+  background:#26191d;
+  color:#f5e8eb;
+}
+
+body.dark-mode .hidden-number{
+  color:#cdbdc1;
+}
+
+body.dark-mode .modal{
+  background:rgba(0,0,0,.75);
+}
+
+body.dark-mode .bottom-nav{
+  box-shadow:0 -4px 20px rgba(0,0,0,.3);
+}
+
+body.dark-mode .admin-phone{
+  background:#3a2a12;
+  color:#f3d78d;
+}
+
+body.dark-mode .form-label{
+  color:#e8dce0;
+}
+
+body.dark-mode .close-btn{
+  background:#302126;
+  color:#fff;
+}
+
+/* ================= HEADER ================= */
+
+.top-header{
+  position:sticky;
+  top:0;
+  z-index:100;
+  background:var(--white);
+  border-bottom:1px solid var(--line);
+  box-shadow:0 2px 12px rgba(0,0,0,.04);
+}
+
+.header-inner{
+  max-width:1100px;
+  margin:auto;
+  min-height:62px;
+  padding:9px 15px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  color:var(--primary);
+  font-weight:950;
+  font-size:15px;
+  letter-spacing:.2px;
+}
+
+.logo-mark{
+  width:35px;
+  height:35px;
+  border-radius:11px;
+  background:linear-gradient(135deg,var(--primary),var(--dark));
+  display:grid;
+  place-items:center;
+  color:white;
+}
+
+.logo-mark svg{
+  width:19px;
+  height:19px;
+}
+
+.header-right{
+  display:flex;
+  align-items:center;
+  gap:7px;
+}
+
+.header-btn,
+.theme-btn{
+  width:39px;
+  height:39px;
+  border:1px solid var(--line);
+  border-radius:11px;
+  background:var(--white);
+  color:var(--primary);
+  display:grid;
+  place-items:center;
+}
+
+.header-btn svg,
+.theme-btn svg{
+  width:19px;
+  height:19px;
+}
+
+.header-btn.primary{
+  background:var(--primary);
+  color:white;
+  border-color:var(--primary);
+}
+
+.theme-btn{
+  background:var(--primary);
+  color:white;
+  border-color:var(--primary);
+}
+
+/* ================= HERO ================= */
+
+.hero{
+  background:linear-gradient(135deg,var(--primary),var(--dark));
+  color:white;
+  padding:24px 15px 30px;
+}
+
+.hero-inner{
+  max-width:1100px;
+  margin:auto;
+}
+
+.hero-top{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:15px;
+}
+
+.hero h1{
+  font-size:27px;
+  line-height:1.1;
+  font-weight:950;
+  margin-bottom:8px;
+}
+
+.hero p{
+  font-size:12px;
+  line-height:1.6;
+  opacity:.88;
+  max-width:500px;
+}
+
+.hero-badge{
+  background:rgba(255,255,255,.13);
+  border:1px solid rgba(255,255,255,.2);
+  border-radius:20px;
+  padding:7px 10px;
+  font-size:10px;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.search-wrap{
+  margin-top:20px;
+  position:relative;
+}
+
+.search-wrap svg{
+  position:absolute;
+  left:14px;
+  top:50%;
+  transform:translateY(-50%);
+  width:18px;
+  color:#8a777c;
+}
+
+.search-wrap input{
+  width:100%;
+  border:0;
+  outline:0;
+  border-radius:14px;
+  padding:14px 15px 14px 43px;
+  background:white;
+  color:#24171b;
+  box-shadow:0 8px 22px rgba(0,0,0,.12);
+}
+
+/* ================= CONTENT ================= */
+
+.container{
+  max-width:1100px;
+  margin:auto;
+  padding:18px 15px;
+}
+
+.section-head{
+  display:flex;
+  align-items:end;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:11px;
+}
+
+.section-head h2{
+  font-size:17px;
+  font-weight:950;
+}
+
+.section-head p{
+  color:var(--muted);
+  font-size:10px;
+  margin-top:3px;
+}
+
+/* ================= CATEGORIES ================= */
+
+.category-scroll,
+.location-row{
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  scrollbar-width:none;
+  padding-bottom:3px;
+}
+
+.category-scroll::-webkit-scrollbar,
+.location-row::-webkit-scrollbar{
+  display:none;
+}
+
+.category,
+.location-chip{
+  flex:0 0 auto;
+  border:1px solid var(--line);
+  background:var(--white);
+  color:var(--text);
+  border-radius:22px;
+  padding:9px 13px;
+  font-size:10px;
+  font-weight:900;
+}
+
+.category.active,
+.location-chip.active{
+  background:var(--primary);
+  border-color:var(--primary);
+  color:white;
+}
+
+/* ================= FEATURE ================= */
+
+.feature-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  margin-bottom:22px;
+}
+
+.feature-card{
+  background:var(--white);
+  border-radius:15px;
+  padding:13px;
+  box-shadow:var(--shadow);
+  border:1px solid var(--line);
+}
+
+.feature-card h3{
+  font-size:12px;
+  margin:8px 0 4px;
+}
+
+.feature-card p{
+  color:var(--muted);
+  font-size:9px;
+  line-height:1.5;
+}
+
+.feature-icon{
+  width:34px;
+  height:34px;
+  border-radius:10px;
+  background:var(--soft);
+  color:var(--primary);
+  display:grid;
+  place-items:center;
+}
+
+.feature-icon svg{
+  width:17px;
+}
+
+/* ================= POSTS ================= */
+
+.posts-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+
+.card{
+  background:var(--white);
+  border-radius:17px;
+  overflow:hidden;
+  border:1px solid var(--line);
+  box-shadow:var(--shadow);
+  min-width:0;
+}
+
+.media{
+  min-height:180px;
+  background:#eee;
+  position:relative;
+  overflow:hidden;
+}
+
+.media img,
+.media video{
+  width:100%;
+  height:auto;
+  max-height:320px;
+  object-fit:contain;
+  display:block;
+}
+
+.favorite-btn{
+  position:absolute;
+  top:9px;
+  right:9px;
+  width:33px;
+  height:33px;
+  border:0;
+  border-radius:50%;
+  background:rgba(255,255,255,.93);
+  color:#72142d;
+  display:grid;
+  place-items:center;
+  z-index:2;
+}
+
+.favorite-btn svg{
+  width:16px;
+}
+
+.card-content{
+  padding:12px;
+}
+
+.card-title{
+  font-size:13px;
+  font-weight:950;
+  line-height:1.25;
+  margin-bottom:5px;
+}
+
+.card-location{
+  color:var(--primary);
+  font-size:9px;
+  font-weight:900;
+  margin-bottom:7px;
+}
+.premium-badge{
+  display:inline-block;
+  margin:4px 0 7px;
+  padding:5px 9px;
+  border-radius:8px;
+  font-size:9px;
+  font-weight:900;
+  background:var(--primary);
+  color:#fff;
+}
+.new-badge{
+  display:inline-block;
+  margin:0 0 7px;
+  padding:5px 9px;
+  border-radius:8px;
+  font-size:9px;
+  font-weight:900;
+  background:#f3e3b2;
+  color:#4b0b1d;
+}
+.card-description{
+  font-size:10px;
+  color:var(--muted);
+  line-height:1.5;
+  min-height:30px;
+}
+
+.card-phone{
+  margin-top:10px;
+  padding:9px;
+  border-radius:10px;
+  background:var(--soft);
+  color:var(--primary);
+  font-size:11px;
+  font-weight:950;
+}
+
+.hidden-number{
+  color:var(--muted);
+  letter-spacing:1px;
+}
+
+.admin-phone{
+  background:#fff2d6;
+  color:#704b0b;
+}
+
+.admin-label{
+  font-size:8px;
+  font-weight:950;
+  margin-bottom:3px;
+}
+
+.card-bottom{
+  margin-top:10px;
+}
+
+.unlock-btn{
+  width:100%;
+  border:0;
+  border-radius:10px;
+  padding:10px;
+  background:linear-gradient(135deg,var(--primary),var(--dark));
+  color:white;
+  font-size:10px;
+  font-weight:950;
+}
+
+.admin-actions{
+  margin-top:8px;
+}
+
+.delete-btn{
+  width:100%;
+  border:0;
+  background:#fbe7ea;
+  color:#72142d;
+  padding:9px;
+  border-radius:9px;
+  font-size:9px;
+  font-weight:950;
+}
+
+.empty{
+  grid-column:1/-1;
+  padding:35px 15px;
+  text-align:center;
+  color:var(--muted);
+  font-size:11px;
+}
+
+/* ================= SUPPORT ================= */
+
+.support-card{
+  margin-top:20px;
+  background:linear-gradient(135deg,var(--primary),var(--dark));
+  color:white;
+  border-radius:18px;
+  padding:18px;
+  box-shadow:var(--shadow);
+}
+
+.support-card h3{
+  font-size:15px;
+  margin-bottom:5px;
+}
+
+.support-card p{
+  font-size:10px;
+  opacity:.85;
+  line-height:1.5;
+}
+
+.support-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:13px;
+}
+
+.support-actions a{
+  text-decoration:none;
+  text-align:center;
+  padding:10px;
+  border-radius:10px;
+  background:white;
+  color:var(--primary);
+  font-size:10px;
+  font-weight:950;
+}
+
+/* ================= ADD BUTTON ================= */
+
+.add-button{
+  position:fixed;
+  right:17px;
+  bottom:86px;
+  width:50px;
+  height:50px;
+  border:0;
+  border-radius:16px;
+  background:linear-gradient(135deg,var(--gold),#b9851f);
+  color:white;
+  box-shadow:0 8px 24px rgba(0,0,0,.22);
+  z-index:90;
+  display:none;
+  place-items:center;
+}
+
+.add-button svg{
+  width:22px;
+}
+
+body.admin-mode .add-button{
+  display:grid;
+}
+
+/* ================= BOTTOM NAV ================= */
+
+.bottom-nav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  z-index:100;
+  height:68px;
+  background:var(--white);
+  border-top:1px solid var(--line);
+  display:flex;
+  justify-content:center;
+  box-shadow:0 -4px 20px rgba(0,0,0,.06);
+}
+
+.nav-inner{
+  width:100%;
+  max-width:600px;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+}
+
+.nav-item{
+  border:0;
+  background:transparent;
+  color:var(--muted);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  font-size:9px;
+  font-weight:900;
+}
+
+.nav-item svg{
+  width:19px;
+  height:19px;
+}
+
+.nav-item.active{
+  color:var(--primary);
+}
+
+/* ================= MODAL ================= */
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.58);
+  z-index:200;
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
+  padding:12px;
+}
+.media-modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.92);
+  z-index:9999;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.media-modal.show{
+  display:flex;
+}
+
+.media-modal img{
+  width:auto;
+  height:auto;
+  max-width:100%;
+  max-height:90vh;
+  object-fit:contain;
+  display:block;
+  border-radius:12px;
+}
+
+.media-close{
+  position:absolute;
+  top:16px;
+  right:16px;
+  width:46px;
+  height:46px;
+  border:1px solid rgba(255,255,255,.35);
+  border-radius:50%;
+  background:rgba(0,0,0,.55);
+  color:#fff;
+  display:grid;
+  place-items:center;
+  font-size:30px;
+  font-weight:300;
+  line-height:1;
+  cursor:pointer;
+  z-index:10001;
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+}
+.modal.show{
+  display:flex;
+}
+
+.modal-box{
+  width:100%;
+  max-width:520px;
+  max-height:92vh;
+  overflow:auto;
+  background:white;
+  color:var(--text);
+  border-radius:22px 22px 14px 14px;
+  padding:18px;
+  animation:slideUp .22s ease;
+}
+
+@keyframes slideUp{
+  from{
+    transform:translateY(40px);
+    opacity:0;
+  }
+  to{
+    transform:translateY(0);
+    opacity:1;
+  }
+}
+
+.modal-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:17px;
+}
+
+.modal-head h3{
+  font-size:16px;
+  font-weight:950;
+}
+
+.close-btn{
+  width:34px;
+  height:34px;
+  border:0;
+  border-radius:10px;
+  background:#f4edef;
+  color:#72142d;
+  display:grid;
+  place-items:center;
+}
+
+.close-btn svg{
+  width:17px;
+}
+
+.form-group{
+  margin-bottom:12px;
+}
+
+.form-label{
+  display:block;
+  font-size:10px;
+  font-weight:950;
+  margin-bottom:6px;
+  color:#4d3b40;
+}
+
+.form-input,
+.form-textarea,
+.form-select{
+  width:100%;
+  border:1px solid var(--line);
+  outline:none;
+  border-radius:11px;
+  padding:11px;
+  background:var(--white);
+  color:var(--text);
+  font-size:11px;
+}
+
+.form-textarea{
+  min-height:90px;
+  resize:vertical;
+}
+
+.primary-btn{
+  width:100%;
+  border:0;
+  border-radius:11px;
+  padding:12px;
+  background:linear-gradient(135deg,var(--primary),var(--dark));
+  color:white;
+  font-size:11px;
+  font-weight:950;
+}
+
+.secondary-btn{
+  width:100%;
+  border:1px solid var(--line);
+  border-radius:11px;
+  padding:11px;
+  background:var(--white);
+  color:var(--primary);
+  font-size:11px;
+  font-weight:950;
+  margin-top:8px;
+}
+
+/* ================= PAYMENT ================= */
+
+.payment-price{
+  text-align:center;
+  padding:13px;
+  border-radius:12px;
+  background:var(--soft);
+  color:var(--primary);
+  font-size:22px;
+  font-weight:950;
+  margin-bottom:14px;
+}
+
+.payment-methods{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:9px;
+  margin-bottom:13px;
+}
+
+.payment-method{
+  position:relative;
+  min-height:125px;
+  border:2px solid var(--line);
+  border-radius:15px;
+  padding:7px;
+  background:var(--white);
+  color:var(--text);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  transition:.18s ease;
+  overflow:hidden;
+}
+
+.payment-method.selected{
+  border-color:var(--primary);
+  background:var(--soft);
+  color:var(--primary);
+  box-shadow:0 0 0 3px rgba(114,20,45,.08);
+}
+
+.payment-logo-box{
+  width:100%;
+  height:80px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#fff;
+  border-radius:10px;
+  padding:2px;
+  overflow:hidden;
+}
+
+.payment-logo{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  object-position:center;
+  display:block;
+}
+
+.payment-method-name{
+  font-size:10px;
+  font-weight:950;
+}
+
+.payment-method .check{
+  position:absolute;
+  top:6px;
+  right:7px;
+  width:19px;
+  height:19px;
+  border-radius:50%;
+  background:var(--primary);
+  color:white;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  font-size:11px;
+  font-weight:950;
+  z-index:3;
+}
+
+.payment-method.selected .check{
+  display:flex;
+}
+
+.logo-missing{
+  display:none;
+}
+
+.payment-note{
+  color:var(--muted);
+  font-size:9px;
+  line-height:1.5;
+  margin:10px 0;
+}
+
+/* ================= TOAST ================= */
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:82px;
+  transform:translateX(-50%) translateY(20px);
+  background:#24171b;
+  color:white;
+  padding:11px 15px;
+  border-radius:11px;
+  font-size:10px;
+  font-weight:800;
+  opacity:0;
+  pointer-events:none;
+  z-index:500;
+  transition:.25s ease;
+  max-width:90%;
+  text-align:center;
+}
+
+.toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+
+/* ================= ADMIN ================= */
+
+.admin-badge{
+  display:none;
+  background:var(--gold);
+  color:white;
+  border-radius:20px;
+  padding:5px 9px;
+  font-size:8px;
+  font-weight:950;
+}
+
+body.admin-mode .admin-badge{
+  display:inline-block;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(min-width:700px){
+
+  .posts-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+
+  .feature-grid{
+    grid-template-columns:repeat(3,1fr);
+  }
+
+  .media{
+    height:220px;
+  }
+
+  .hero{
+    padding-top:35px;
+    padding-bottom:38px;
+  }
+
+  .hero h1{
+    font-size:35px;
+  }
+}
+
+@media(max-width:370px){
+
+  .posts-grid{
+    gap:8px;
+  }
+
+  .card-content{
+    padding:9px;
+  }
+
+  .media{
+    height:150px;
+  }
+
+  .card-title{
+    font-size:12px;
+  }
+
+  .payment-logo-box{
+    height:70px;
+  }
+
+  .payment-method{
+    min-height:115px;
+    padding:5px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+
+<header class="top-header">
+  <div class="header-inner">
+
+    <div class="logo">
+      <div class="logo-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 11.5A7.5 7.5 0 0 1 8.5 19L4 20l1-4.5A7.5 7.5 0 1 1 20 11.5Z"/>
+          <path d="M8 12h.01M12 12h.01M16 12h.01"/>
+        </svg>
+      </div>
+
+      <span>CONNECTION TANZANIA</span>
+    </div>
+
+    <div class="header-right">
+
+      <span class="admin-badge">ADMIN</span>
+
+      <button
+        class="theme-btn"
+        id="themeBtn"
+        onclick="toggleTheme()"
+        aria-label="Badili theme"
+      >
+        <svg
+          id="themeIcon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M21 12.8A8.5 8.5 0 1 1 11.2 3A6.7 6.7 0 0 0 21 12.8Z"/>
+        </svg>
+      </button>
+
+      <button
+        class="header-btn admin-only"
+        id="adminLoginBtn"
+        onclick="openAdminModal()"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/>
+          <path d="M4 21a8 8 0 0 1 16 0"/>
+        </svg>
+      </button>
+
+    </div>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+
+<section class="hero">
+  <div class="hero-inner">
+
+    <div class="hero-top">
+
+      <div>
+
+        <h1>CONNECTION TANZANIA 🇹🇿</h1>
+
+        <p>
+          Pata connection mpya Tanzania kwa urahisi.
+          Chagua connection, lipia na fungua namba.
+        </p>
+
+      </div>
+
+      <div class="hero-badge">
+        Premium
+      </div>
+
+    </div>
+
+    <div class="search-wrap">
+
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <circle cx="11" cy="11" r="7"/>
+        <path d="m20 20-4-4"/>
+      </svg>
+
+      <input
+        id="searchInput"
+        type="text"
+        placeholder="Tafuta connection..."
+        oninput="filterPosts()"
+      >
+
+    </div>
+
+  </div>
+</section>
+
+<!-- ================= MAIN ================= -->
+
+<main class="container">
+
+  <div class="section-head">
+
+    <div>
+
+      <h2>Explore</h2>
+
+      <p>
+        Chagua unachotaka kuona
+      </p>
+
+    </div>
+
+  </div>
+
+  <!-- CATEGORIES -->
+
+  <div class="category-scroll">
+
+    <button
+      class="category active"
+      onclick="showHome(this)"
+    >
+      Home
+    </button>
+<button
+  class="category"
+  onclick="showPremium(this)"
+>
+  💎 Premium
+</button>
+    <button
+      class="category"
+      onclick="showTrending(this)"
+    >
+      🔥 Trending
+    </button>
+
+    <button
+      class="category"
+      onclick="showNew(this)"
+    >
+      ✨ Mpya
+    </button>
+
+    <button
+      class="category"
+      onclick="showFavorites(this)"
+    >
+      ♡ Favorites
+    </button>
+
+  </div>
+
+  <!-- FEATURES -->
+
+  <div
+    class="feature-grid"
+    style="margin-top:14px"
+  >
+
+    <div class="feature-card">
+
+      <div class="feature-icon">
+
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M20 11.5A7.5 7.5 0 0 1 8.5 19L4 20l1-4.5A7.5 7.5 0 1 1 20 11.5Z"/>
+        </svg>
+
+      </div>
+
+      <h3>
+        Connection mpya
+      </h3>
+
+      <p>
+        Angalia watu wapya waliowekwa kwenye platform.
+      </p>
+
+    </div>
+
+    <div class="feature-card">
+
+      <div class="feature-icon">
+
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M12 3v18M3 12h18"/>
+          <circle cx="12" cy="12" r="9"/>
+        </svg>
+
+      </div>
+
+      <h3>
+        Secure Unlock
+      </h3>
+
+      <p>
+        Kila connection ina unlock yake binafsi.
+      </p>
+
+    </div>
+
+    <div class="feature-card">
+
+      <div class="feature-icon">
+
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/>
+          <circle cx="12" cy="10" r="2.5"/>
+        </svg>
+
+      </div>
+
+      <h3>
+        Tanzania nzima
+      </h3>
+
+      <p>
+        Tafuta connection kulingana na location.
+      </p>
+
+    </div>
+
+  </div>
+
+  <!-- LOCATIONS -->
+
+  <div class="section-head">
+
+    <div>
+
+      <h2>
+        Locations
+      </h2>
+
+      <p>
+        Chagua mkoa
+      </p>
+
+    </div>
+
+  </div>
+
+  <div class="location-row">
+
+    <button
+      class="location-chip active"
+      onclick="setLocation('',this)"
+    >
+      All
+    </button>
+
+    <button
+      class="location-chip"
+      onclick="setLocation('Dar es Salaam',this)"
+    >
+      Dar es Salaam
+    </button>
+
+    <button
+      class="location-chip"
+      onclick="setLocation('Arusha',this)"
+    >
+      Arusha
+    </button>
+
+    <button
+      class="location-chip"
+      onclick="setLocation('Mwanza',this)"
+    >
+      Mwanza
+    </button>
+
+    <button
+      class="location-chip"
+      onclick="setLocation('Dodoma',this)"
+    >
+      Dodoma
+    </button>
+
+    <button
+      class="location-chip"
+      onclick="setLocation('Mbeya',this)"
+    >
+      Mbeya
+    </button>
+
+    <button
+      class="location-chip"
+      onclick="setLocation('Iringa',this)"
+    >
+      Iringa
+    </button>
+
+    <button
+      class="location-chip"
+      onclick="setLocation('Morogoro',this)"
+    >
+      Morogoro
+    </button>
+
+    <button
+      class="location-chip"
+      onclick="setLocation('Tanga',this)"
+    >
+      Tanga
+    </button>
+
+    <button
+      class="location-chip"
+      onclick="setLocation('Zanzibar',this)"
+    >
+      Zanzibar
+    </button>
+
+  </div>
+
+  <!-- POSTS -->
+
+  <div
+    class="section-head"
+    style="margin-top:22px"
+  >
+
+    <div>
+
+      <h2 id="postsHeading">
+        Connection mpya
+      </h2>
+
+      <p id="postsSubheading">
+        Chagua connection unayoipenda
+      </p>
+
+    </div>
+
+  </div>
+
+  <div
+    class="posts-grid"
+    id="postsGrid"
+  ></div>
+
+  <!-- SUPPORT -->
+
+  <div class="support-card">
+
+    <h3>
+      Unahitaji msaada?
+    </h3>
+
+    <p>
+      Wasiliana nasi kupitia WhatsApp au piga simu kwa msaada.
+    </p>
+
+    <div class="support-actions">
+
+      <a
+        href="https://wa.me/255656508322?text=Habari%20CONNECTION%20TANZANIA"
+        target="_blank"
+      >
+        WhatsApp
+      </a>
+
+      <a href="tel:+255656508322">
+        Piga Simu
+      </a>
+
+    </div>
+
+  </div>
+
+</main>
+
+<!-- ================= ADMIN ADD BUTTON ================= -->
+
+<button
+  class="add-button"
+  onclick="openPostModal()"
+  aria-label="Ongeza connection"
+>
+
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2.5"
+  >
+    <path d="M12 5v14M5 12h14"/>
+  </svg>
+
+</button>
+
+<!-- ================= BOTTOM NAV ================= -->
+
+<nav class="bottom-nav">
+
+  <div class="nav-inner">
+
+    <button
+      class="nav-item active"
+      id="navHome"
+      onclick="showHome()"
+    >
+
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path d="m3 11 9-8 9 8"/>
+        <path d="M5 10v10h14V10"/>
+      </svg>
+
+      Home
+
+    </button>
+
+    <button
+      class="nav-item"
+      id="navTrending"
+      onclick="showTrending()"
+    >
+
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path d="M12 21s8-4.5 8-11A8 8 0 0 0 16 3c0 4-2 5-4 7-1-3-3-4-3-7-3 2-5 5-5 8 0 6 8 10 8 10Z"/>
+      </svg>
+
+      Trending
+
+    </button>
+
+    <button
+      class="nav-item"
+      id="navNew"
+      onclick="showNew()"
+    >
+
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path d="M12 3v18M3 12h18"/>
+      </svg>
+
+      Mpya
+
+    </button>
+
+    <button
+      class="nav-item"
+      id="navFavorites"
+      onclick="showFavorites()"
+    >
+
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path d="m12 20-1.4-1.3C5.4 14 2 10.9 2 7.2A4.7 4.7 0 0 1 6.8 3c2 0 3.9.9 5.2 2.4A6.8 6.8 0 0 1 17.2 3 4.7 4.7 0 0 1 22 7.2c0 3.7-3.4 6.8-8.6 11.5L12 20Z"/>
+      </svg>
+
+      Favorites
+
+    </button>
+
+  </div>
+
+</nav>
+
+<!-- ================= ADMIN LOGIN MODAL ================= -->
+
+<div
+  class="modal"
+  id="adminModal"
+>
+
+  <div class="modal-box">
+
+    <div class="modal-head">
+
+      <h3>
+        Admin Login
+      </h3>
+
+      <button
+        class="close-btn"
+        onclick="closeModal('adminModal')"
+      >
+
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="m6 6 12 12M18 6 6 18"/>
+        </svg>
+
+      </button>
+
+    </div>
+
+    <div class="form-group">
+
+      <label class="form-label">
+        Email
+      </label>
+
+      <input
+        class="form-input"
+        id="adminEmail"
+        type="email"
+        value="braizerdylan@gmail.com"
+      >
+
+    </div>
+
+    <div class="form-group">
+
+      <label class="form-label">
+        Password
+      </label>
+
+      <input
+        class="form-input"
+        id="adminPassword"
+        type="password"
+      >
+
+    </div>
+
+    <button
+      class="primary-btn"
+      onclick="adminLogin()"
+    >
+      Ingia kama Admin
+    </button>
+
+    <button
+      class="secondary-btn"
+      onclick="adminLogout()"
+    >
+      Toka Admin
+    </button>
+
+  </div>
+
+</div>
+
+<!-- ================= POST MODAL ================= -->
+
+<div
+  class="modal"
+  id="postModal"
+>
+
+  <div class="modal-box">
+
+    <div class="modal-head">
+
+      <h3>
+        Ongeza Connection
+      </h3>
+
+      <button
+        class="close-btn"
+        onclick="closeModal('postModal')"
+      >
+
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="m6 6 12 12M18 6 6 18"/>
+        </svg>
+
+      </button>
+
+    </div>
+
+    <div class="form-group">
+
+      <label class="form-label">
+        Jina / Title
+      </label>
+
+      <input
+        class="form-input"
+        id="postTitle"
+        placeholder="Mfano: Beautiful Connection"
+      >
+
+    </div>
+
+    <div class="form-group">
+
+      <label class="form-label">
+        Location
+      </label>
+
+      <input
+        class="form-input"
+        id="postLocation"
+        placeholder="Mfano: Dar es Salaam"
+      >
+
+    </div>
+
+    <div class="form-group">
+
+      <label class="form-label">
+        Description
+      </label>
+
+      <textarea
+        class="form-textarea"
+        id="postDescription"
+        placeholder="Andika maelezo..."
+      ></textarea>
+
+    </div>
+
+    <div class="form-group">
+
+      <label class="form-label">
+        Namba ya Simu
+      </label>
+
+      <input
+        class="form-input"
+        id="postPhone"
+        type="tel"
+        placeholder="07XXXXXXXX"
+      >
+
+    </div>
+
+    <div class="form-group">
+
+      <label class="form-label">
+        Picha / Video
+      </label>
+
+      <input
+        class="form-input"
+        id="postFile"
+        type="file"
+        accept="image/*,video/*"
+      >
+
+    </div>
+
+    <button
+      class="primary-btn"
+      id="publishBtn"
+      onclick="createPost()"
+    >
+      Publish Connection
+    </button>
+
+  </div>
+
+</div>
+
+<!-- ================= PAYMENT MODAL ================= -->
+
+<div
+  class="modal"
+  id="paymentModal"
+>
+
+  <div class="modal-box">
+
+    <div class="modal-head">
+
+      <h3>
+        Fungua Namba ya Simu
+      </h3>
+
+      <button
+        class="close-btn"
+        onclick="closeModal('paymentModal')"
+      >
+
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="m6 6 12 12M18 6 6 18"/>
+        </svg>
+
+      </button>
+
+    </div>
+
+    <div
+      class="payment-price"
+      id="paymentAmount"
+    >
+      TSh 10,000
+    </div>
+
+    <div class="payment-methods">
+
+      <button
+        class="payment-method"
+        type="button"
+        onclick="selectPaymentMethod(this,'M-Pesa')"
+      >
+
+        <span class="check">
+          ✓
+        </span>
+
+        <span class="payment-logo-box">
+
+          <img
+            class="payment-logo"
+            src="Mpesa.jpeg"
+            alt="M-Pesa"
+            onerror="this.closest('.payment-logo-box').classList.add('logo-missing')"
+          >
+
+        </span>
+
+        <span class="payment-method-name">
+          M-Pesa
+        </span>
+
+      </button>
+
+      <button
+        class="payment-method"
+        type="button"
+        onclick="selectPaymentMethod(this,'Mixx by Yas')"
+      >
+
+        <span class="check">
+          ✓
+        </span>
+
+        <span class="payment-logo-box">
+
+          <img
+            class="payment-logo"
+            src="Mixx.png.jpeg"
+            alt="Mixx by Yas"
+            onerror="this.closest('.payment-logo-box').classList.add('logo-missing')"
+          >
+
+        </span>
+
+        <span class="payment-method-name">
+          Mixx by Yas
+        </span>
+
+      </button>
+
+      <button
+        class="payment-method"
+        type="button"
+        onclick="selectPaymentMethod(this,'Airtel Money')"
+      >
+
+        <span class="check">
+          ✓
+        </span>
+
+        <span class="payment-logo-box">
+
+          <img
+            class="payment-logo"
+            src="Airtel.png.jpeg"
+            alt="Airtel Money"
+            onerror="this.closest('.payment-logo-box').classList.add('logo-missing')"
+          >
+
+        </span>
+
+        <span class="payment-method-name">
+          Airtel Money
+        </span>
+
+      </button>
+
+      <button
+        class="payment-method"
+        type="button"
+        onclick="selectPaymentMethod(this,'HaloPesa')"
+      >
+
+        <span class="check">
+          ✓
+        </span>
+
+        <span class="payment-logo-box">
+
+          <img
+            class="payment-logo"
+            src="Halopesa.png.jpeg"
+            alt="HaloPesa"
+            onerror="this.closest('.payment-logo-box').classList.add('logo-missing')"
+          >
+
+        </span>
+
+        <span class="payment-method-name">
+          HaloPesa
+        </span>
+
+      </button>
+
+    </div>
+
+    <div class="form-group">
+
+      <label class="form-label">
+        Namba yako ya malipo
+      </label>
+
+      <input
+        class="form-input"
+        id="payerPhone"
+        type="tel"
+        placeholder="07XXXXXXXX"
+      >
+
+    </div>
+
+    <p class="payment-note">
+      Utaombwa kuthibitisha malipo kupitia huduma rasmi ya simu.
+      Usiweke PIN yako kwenye website.
+    </p>
+
+    <button
+      class="primary-btn"
+      id="payBtn"
+      onclick="startPayment()"
+    >
+      Lipa TSh 10,000 Kufungua Namba
+    </button>
+
+  </div>
+
+</div>
+
+<!-- ================= TOAST ================= -->
+
+<div
+  class="toast"
+  id="toast"
+></div>
+
+<script>
+/* =========================================================
+   SUPABASE
+========================================================= */
+
+const SUPABASE_URL =
+  "https://mfngxzgbsypkcylrxshs.supabase.co";
+
+/*
+  WEKA SUPABASE PUBLISHABLE / ANON KEY YAKO HAPA.
+  USIWEKE MOBILIPA SECRET HAPA.
+*/
+
+const SUPABASE_KEY = "sb_publishable_wufeP2QAHN3n6NmvFKz-tg_LUjF0c_V";
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+const ADMIN_EMAIL =
+  "braizerdylan@gmail.com";
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let allPosts = [];
+let filteredPosts = [];
+
+let adminPhones = {};
+let unlockedPhones = {};
+
+let favorites =
+  JSON.parse(
+    localStorage.getItem(
+      "connection_favorites"
+    ) || "[]"
+  );
+
+let currentLocation = "";
+let currentView = "home";
+
+let selectedPostId = null;
+let selectedPaymentMethod = "";
+
+let isAdmin = false;
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+function toast(message){
+
+  const el =
+    document.getElementById("toast");
+
+  el.textContent =
+    message;
+
+  el.classList.add("show");
+
+  setTimeout(()=>{
+    el.classList.remove("show");
+  },3000);
+}
+
+/* =========================================================
+   MODALS
+========================================================= */
+
+function openModal(id){
+
+  document
+    .getElementById(id)
+    .classList.add("show");
+}
+
+function closeModal(id){
+
+  document
+    .getElementById(id)
+    .classList.remove("show");
+}
+function openMedia(src){
+
+  const preview =
+    document.getElementById("mediaPreview");
+
+  preview.innerHTML = "";
+
+  if(
+    /\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(src)
+  ){
+
+    preview.innerHTML = `
+      <video
+        src="${escapeAttribute(src)}"
+        controls
+        autoplay
+        playsinline
+        style="
+          max-width:100%;
+          max-height:90vh;
+          width:auto;
+          height:auto;
+          object-fit:contain;
+          display:block;
+          border-radius:12px;
+        "
+      ></video>
+    `;
+
+  }else{
+
+    preview.innerHTML = `
+      <img
+        src="${escapeAttribute(src)}"
+        alt="Preview"
+        style="
+          width:auto;
+          height:auto;
+          max-width:100%;
+          max-height:90vh;
+          object-fit:contain;
+          display:block;
+          border-radius:12px;
+        "
+      >
+    `;
+  }
+
+  document
+    .getElementById("mediaModal")
+    .classList.add("show");
+}
+
+function closeMedia(){
+
+  document
+    .getElementById("mediaModal")
+    .classList.remove("show");
+
+  document
+    .getElementById("mediaPreview")
+    .innerHTML = "";
+}
+
+function openAdminModal(){
+
+  if(isAdmin){
+
+    adminLogout();
+
+    return;
+  }
+
+  openModal("adminModal");
+}
+
+function openPostModal(){
+
+  if(!isAdmin){
+
+    toast("Admin pekee.");
+
+    return;
+  }
+
+  openModal("postModal");
+}
+
+/* =========================================================
+   THEME
+========================================================= */
+
+function toggleTheme(){
+
+  document.body
+    .classList
+    .toggle("dark-mode");
+
+  const dark =
+    document.body
+      .classList
+      .contains("dark-mode");
+
+  localStorage.setItem(
+    "connection_theme",
+    dark ? "dark" : "light"
+  );
+
+  updateThemeIcon();
+}
+
+function updateThemeIcon(){
+
+  const icon =
+    document.getElementById(
+      "themeIcon"
+    );
+
+  if(!icon) return;
+
+  const dark =
+    document.body
+      .classList
+      .contains("dark-mode");
+
+  if(dark){
+
+    icon.innerHTML = `
+      <circle cx="12" cy="12" r="4"></circle>
+      <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"></path>
+    `;
+
+  }else{
+
+    icon.innerHTML = `
+      <path d="M21 12.8A8.5 8.5 0 1 1 11.2 3A6.7 6.7 0 0 0 21 12.8Z"></path>
+    `;
+  }
+}
+
+(function(){
+
+  const saved =
+    localStorage.getItem(
+      "connection_theme"
+    );
+
+  if(saved === "dark"){
+
+    document.body
+      .classList
+      .add("dark-mode");
+  }
+
+  updateThemeIcon();
+
+})();
+
+/* =========================================================
+   AUTH / ADMIN
+========================================================= */
+
+async function adminLogin(){
+
+  const email =
+    document
+      .getElementById("adminEmail")
+      .value
+      .trim();
+
+  const password =
+    document
+      .getElementById("adminPassword")
+      .value;
+
+  if(!email || !password){
+
+    toast(
+      "Jaza email na password."
+    );
+
+    return;
+  }
+
+  if(
+    email.toLowerCase() !==
+    ADMIN_EMAIL.toLowerCase()
+  ){
+
+    toast(
+      "Admin email si sahihi."
+    );
+
+    return;
+  }
+
+  const {data,error} =
+    await supabaseClient.auth
+      .signInWithPassword({
+        email,
+        password
+      });
+
+  if(error){
+
+    console.error(error);
+
+    toast(
+      "Login imeshindikana."
+    );
+
+    return;
+  }
+
+  if(
+    !data.user ||
+    data.user.email.toLowerCase() !==
+    ADMIN_EMAIL.toLowerCase()
+  ){
+
+    await supabaseClient.auth.signOut();
+
+    toast(
+      "Account hii si Admin."
+    );
+
+    return;
+  }
+
+  isAdmin = true;
+
+  document.body
+    .classList
+    .add("admin-mode");
+
+  closeModal("adminModal");
+
+  toast(
+    "Admin umeingia."
+  );
+
+  await loadAdminPhones();
+
+  renderPosts();
+}
+
+async function adminLogout(){
+
+  await supabaseClient.auth.signOut();
+
+  isAdmin = false;
+
+  adminPhones = {};
+
+  document.body
+    .classList
+    .remove("admin-mode");
+
+  closeModal("adminModal");
+
+  toast(
+    "Umetoka Admin."
+  );
+
+  renderPosts();
+}
+
+async function checkAdmin(){
+
+  const {data} =
+    await supabaseClient.auth
+      .getUser();
+
+  if(
+    data &&
+    data.user &&
+    data.user.email &&
+    data.user.email.toLowerCase() ===
+    ADMIN_EMAIL.toLowerCase()
+  ){
+
+    isAdmin = true;
+
+    document.body
+      .classList
+      .add("admin-mode");
+
+    await loadAdminPhones();
+
+  }else{
+
+    isAdmin = false;
+
+    document.body
+      .classList
+      .remove("admin-mode");
+  }
+}
+
+/* =========================================================
+   LOAD POSTS
+========================================================= */
+
+async function loadPosts(){
+
+  const {data,error} =
+    await supabaseClient
+      .from("post")
+      .select(`
+        id,
+        created_at,
+        title,
+        location,
+        description,
+        image_url,
+        unlock_price,
+        is_new,
+        user_id
+      `)
+      .order(
+        "created_at",
+        {ascending:false}
+      );
+
+  if(error){
+
+    console.error(error);
+
+    toast(
+      "Imeshindikana kupakia connections."
+    );
+
+    return;
+  }
+
+  allPosts =
+    data || [];
+
+  await checkAdmin();
+
+  filteredPosts =
+    [...allPosts];
+
+  renderPosts();
+}
+
+/* =========================================================
+   ADMIN PHONE
+========================================================= */
+
+async function loadAdminPhones(){
+
+  adminPhones = {};
+
+  if(!isAdmin) return;
+
+  for(const post of allPosts){
+
+    const {data,error} =
+      await supabaseClient.rpc(
+        "admin_get_phone",
+        {
+          p_post_id:
+            Number(post.id)
+        }
+      );
+
+    if(!error && data){
+
+      adminPhones[post.id] =
+        data;
+    }
+  }
+}
+
+/* =========================================================
+   UNLOCKED PHONE
+========================================================= */
+
+async function loadUnlockedPhone(postId){
+
+  const token =
+    localStorage.getItem(
+      `connection_unlock_${postId}`
+    );
+
+  if(!token) return null;
+
+  const {data,error} =
+    await supabaseClient.rpc(
+      "get_unlocked_phone",
+      {
+        p_post_id:
+          Number(postId),
+
+        p_unlock_token:
+          token
+      }
+    );
+
+  if(error){
+
+    console.error(error);
+
+    return null;
+  }
+
+  if(data){
+
+    unlockedPhones[postId] =
+      data;
+
+    return data;
+  }
+
+  return null;
+}
+
+async function loadAllUnlockedPhones(){
+
+  unlockedPhones = {};
+
+  for(const post of allPosts){
+
+    if(!isAdmin){
+
+      await loadUnlockedPhone(
+        post.id
+      );
+    }
+  }
+}
+
+/* =========================================================
+   RENDER POSTS
+========================================================= */
+
+async function renderPosts(){
+
+  const grid =
+    document.getElementById(
+      "postsGrid"
+    );
+
+  grid.innerHTML = "";
+
+  let posts =
+    [...filteredPosts];
+
+  if(currentLocation){
+
+    posts =
+      posts.filter(
+        p =>
+          String(
+            p.location || ""
+          )
+            .toLowerCase()
+            .includes(
+              currentLocation.toLowerCase()
+            )
+      );
+  }
+
+  if(currentView === "new"){
+
+    posts =
+      posts.filter(
+        p =>
+          p.is_new === true
+      );
+  }
+
+  if(currentView === "favorites"){
+
+    posts =
+      posts.filter(
+        p =>
+          favorites.includes(
+            String(p.id)
+          )
+      );
+  }
+
+  if(currentView === "trending"){
+
+    posts =
+      posts.slice(0,20);
+  }
+if(currentView === "premium"){
+
+  posts =
+    posts.filter(
+      p =>
+        Number(p.unlock_price) > 0
+    );
+}
+  if(posts.length === 0){
+
+    grid.innerHTML = `
+      <div class="empty">
+        Hakuna connection zilizopatikana.
+      </div>
+    `;
+
+    return;
+  }
+
+  for(const post of posts){
+
+    const unlockedPhone =
+      unlockedPhones[post.id];
+
+    const adminPhone =
+      adminPhones[post.id];
+
+    let phoneHTML = "";
+
+    if(
+      isAdmin &&
+      adminPhone
+    ){
+
+      phoneHTML = `
+        <div class="card-phone admin-phone">
+
+          <div class="admin-label">
+            ADMIN • Namba kamili
+          </div>
+
+          ${escapeHTML(adminPhone)}
+
+        </div>
+      `;
+
+    }else if(unlockedPhone){
+
+      phoneHTML = `
+        <div class="card-phone">
+          ${escapeHTML(unlockedPhone)}
+        </div>
+      `;
+
+    }else{
+
+      phoneHTML = `
+        <div class="card-phone">
+          <span class="hidden-number">
+            07XXXXXXXX
+          </span>
+        </div>
+      `;
+    }
+
+    const isFavorite =
+      favorites.includes(
+        String(post.id)
+      );
+
+    const media =
+      post.image_url || "";
+
+    let mediaHTML = "";
+
+    if(
+      media.match(
+        /\.(mp4|webm|mov|m4v)(\?.*)?$/i
+      )
+    ){
+
+      mediaHTML = `
+        <video
+  src="${escapeAttribute(media)}"
+  controls
+  muted
+  playsinline
+  onclick="openMedia('${escapeAttribute(media)}')"
+  style="cursor:pointer"
+></video>
+      `;
+
+    }else{
+
+      mediaHTML = `
+  <img
+    src="${escapeAttribute(media)}"
+    onclick="openMedia('${escapeAttribute(media)}')"
+    style="cursor:pointer"
+          alt="${escapeAttribute(
+            post.title ||
+            "Connection"
+          )}"
+          loading="lazy"
+          onerror="this.style.display='none'"
+        >
+      `;
+    }
+
+    let actionHTML = "";
+
+    if(
+      !isAdmin &&
+      !unlockedPhone
+    ){
+
+      actionHTML = `
+        <button
+          class="unlock-btn"
+          onclick="openPayment(
+            ${Number(post.id)},
+            ${Number(
+              post.unlock_price ||
+              10000
+            )}
+          )"
+        >
+          Lipa TSh
+          ${formatMoney(
+            post.unlock_price ||
+            10000
+          )}
+          Kufungua Namba
+        </button>
+      `;
+    }
+
+    let adminHTML = "";
+
+    if(isAdmin){
+
+      adminHTML = `
+        <div class="admin-actions">
+
+          <button
+            class="delete-btn"
+            onclick="deletePost(
+              ${Number(post.id)}
+            )"
+          >
+            Futa Connection
+          </button>
+
+        </div>
+      `;
+    }
+
+    const card =
+      document.createElement(
+        "article"
+      );
+
+    card.className =
+      "card";
+
+    card.innerHTML = `
+
+      <div class="media">
+
+        ${mediaHTML}
+
+        <button
+          class="favorite-btn"
+          onclick="toggleFavorite(
+            ${Number(post.id)}
+          )"
+          aria-label="Favorite"
+        >
+
+          <svg
+            viewBox="0 0 24 24"
+            fill="${
+              isFavorite
+              ? "currentColor"
+              : "none"
+            }"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+
+            <path d="
+              m12 20-1.4-1.3
+              C5.4 14 2 10.9 2 7.2
+              A4.7 4.7 0 0 1 6.8 3
+              c2 0 3.9.9 5.2 2.4
+              A6.8 6.8 0 0 1 17.2 3
+              A4.7 4.7 0 0 1 22 7.2
+              c0 3.7-3.4 6.8-8.6 11.5
+              L12 20Z
+            "/>
+
+          </svg>
+
+        </button>
+
+      </div>
+
+      <div class="card-content">
+
+        <div class="card-title">
+          ${escapeHTML(
+            post.title ||
+            "Connection"
+          )}
+        </div>
+<div class="premium-badge">
+  💎 PREMIUM
+</div>
+<div class="new-badge">
+  ✨ MPYA
+</div>
+        <div class="card-location">
+          📍
+          ${escapeHTML(
+            post.location ||
+            "Tanzania"
+          )}
+        </div>
+
+        <div class="card-description">
+          ${escapeHTML(
+            post.description ||
+            ""
+          )}
+        </div>
+
+        ${phoneHTML}
+
+        <div class="card-bottom">
+
+          ${actionHTML}
+
+          ${adminHTML}
+
+        </div>
+
+      </div>
+    `;
+
+    grid.appendChild(card);
+  }
+}
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+function filterPosts(){
+
+  const q =
+    document
+      .getElementById(
+        "searchInput"
+      )
+      .value
+      .trim()
+      .toLowerCase();
+
+  filteredPosts =
+    allPosts.filter(
+      post => {
+
+        const text =
+          `
+          ${post.title || ""}
+          ${post.location || ""}
+          ${post.description || ""}
+          `
+          .toLowerCase();
+
+        return text.includes(q);
+      }
+    );
+
+  renderPosts();
+}
+
+/* =========================================================
+   VIEWS
+========================================================= */
+
+function setActiveCategory(el){
+
+  document
+    .querySelectorAll(
+      ".category"
+    )
+    .forEach(
+      x =>
+        x.classList.remove(
+          "active"
+        )
+    );
+
+  if(el){
+
+    el.classList.add(
+      "active"
+    );
+  }
+}
+
+function setActiveNav(id){
+
+  document
+    .querySelectorAll(
+      ".nav-item"
+    )
+    .forEach(
+      x =>
+        x.classList.remove(
+          "active"
+        )
+    );
+
+  if(id){
+
+    const el =
+      document.getElementById(
+        id
+      );
+
+    if(el){
+
+      el.classList.add(
+        "active"
+      );
+    }
+  }
+}
+
+function showHome(el){
+
+  currentView =
+    "home";
+
+  setActiveCategory(el);
+
+  setActiveNav(
+    "navHome"
+  );
+
+  document
+    .getElementById(
+      "postsHeading"
+    )
+    .textContent =
+      "Connection mpya";
+
+  document
+    .getElementById(
+      "postsSubheading"
+    )
+    .textContent =
+      "Chagua connection unayoipenda";
+
+  renderPosts();
+}
+
+function showTrending(el){
+
+  currentView =
+    "trending";
+
+  setActiveCategory(el);
+
+  setActiveNav(
+    "navTrending"
+  );
+
+  document
+    .getElementById(
+      "postsHeading"
+    )
+    .textContent =
+      "Trending";
+
+  document
+    .getElementById(
+      "postsSubheading"
+    )
+    .textContent =
+      "Connections zinazovuma";
+
+  renderPosts();
+}
+function showPremium(el){
+
+  currentView =
+    "premium";
+
+  setActiveCategory(el);
+
+  setActiveNav(
+    "navHome"
+  );
+
+  document
+    .getElementById(
+      "postsHeading"
+    )
+    .textContent =
+      "Premium";
+
+  document
+    .getElementById(
+      "postsSubheading"
+    )
+    .textContent =
+      "Connections za Premium";
+
+  renderPosts();
+}
+function showNew(el){
+
+  currentView =
+    "new";
+
+  setActiveCategory(el);
+
+  setActiveNav(
+    "navNew"
+  );
+
+  document
+    .getElementById(
+      "postsHeading"
+    )
+    .textContent =
+      "Mpya";
+
+  document
+    .getElementById(
+      "postsSubheading"
+    )
+    .textContent =
+      "Connections zilizowekwa hivi karibuni";
+
+  renderPosts();
+}
+
+function showFavorites(el){
+
+  currentView =
+    "favorites";
+
+  setActiveCategory(el);
+
+  setActiveNav(
+    "navFavorites"
+  );
+
+  document
+    .getElementById(
+      "postsHeading"
+    )
+    .textContent =
+      "Favorites";
+
+  document
+    .getElementById(
+      "postsSubheading"
+    )
+    .textContent =
+      "Connections ulizozipenda";
+
+  renderPosts();
+}
+
+/* =========================================================
+   LOCATION
+========================================================= */
+
+function setLocation(
+  location,
+  el
+){
+
+  currentLocation =
+    location;
+
+  document
+    .querySelectorAll(
+      ".location-chip"
+    )
+    .forEach(
+      x =>
+        x.classList.remove(
+          "active"
+        )
+    );
+
+  if(el){
+
+    el.classList.add(
+      "active"
+    );
+  }
+
+  renderPosts();
+}
+
+/* =========================================================
+   FAVORITES
+========================================================= */
+
+function toggleFavorite(
+  postId
+){
+
+  const id =
+    String(postId);
+
+  if(
+    favorites.includes(id)
+  ){
+
+    favorites =
+      favorites.filter(
+        x =>
+          x !== id
+      );
+
+    toast(
+      "Imeondolewa Favorites."
+    );
+
+  }else{
+
+    favorites.push(id);
+
+    toast(
+      "Imeongezwa Favorites."
+    );
+  }
+
+  localStorage.setItem(
+    "connection_favorites",
+    JSON.stringify(
+      favorites
+    )
+  );
+
+  renderPosts();
+}
+
+/* =========================================================
+   PAYMENT
+========================================================= */
+
+function openPayment(
+  postId,
+  amount
+){
+
+  selectedPostId =
+    Number(postId);
+
+  selectedPaymentMethod =
+    "";
+
+  document
+    .querySelectorAll(
+      ".payment-method"
+    )
+    .forEach(
+      x =>
+        x.classList.remove(
+          "selected"
+        )
+    );
+
+  document
+    .getElementById(
+      "payerPhone"
+    )
+    .value = "";
+
+  document
+    .getElementById(
+      "paymentAmount"
+    )
+    .textContent =
+      `TSh ${formatMoney(
+        amount
+      )}`;
+
+  document
+    .getElementById(
+      "payBtn"
+    )
+    .textContent =
+      `Lipa TSh ${formatMoney(
+        amount
+      )} Kufungua Namba`;
+
+  openModal(
+    "paymentModal"
+  );
+}
+
+function selectPaymentMethod(
+  el,
+  method
+){
+
+  selectedPaymentMethod =
+    method;
+
+  document
+    .querySelectorAll(
+      ".payment-method"
+    )
+    .forEach(
+      x =>
+        x.classList.remove(
+          "selected"
+        )
+    );
+
+  el.classList.add(
+    "selected"
+  );
+}
+
+async function startPayment(){
+
+  if(!selectedPostId){
+
+    toast(
+      "Connection haijachaguliwa."
+    );
+
+    return;
+  }
+
+  if(!selectedPaymentMethod){
+
+    toast(
+      "Chagua njia ya malipo."
+    );
+
+    return;
+  }
+
+  const payerPhone =
+    document
+      .getElementById(
+        "payerPhone"
+      )
+      .value
+      .trim();
+
+  if(!payerPhone){
+
+    toast(
+      "Weka namba yako ya malipo."
+    );
+
+    return;
+  }
+
+  const payBtn =
+    document.getElementById(
+      "payBtn"
+    );
+
+  payBtn.disabled =
+    true;
+
+  payBtn.textContent =
+    "Inaanzisha...";
+
+  const post =
+    allPosts.find(
+      p =>
+        Number(p.id) ===
+        Number(selectedPostId)
+    );
+
+  if(!post){
+
+    payBtn.disabled =
+      false;
+
+    payBtn.textContent =
+      "Endelea na Malipo";
+
+    toast(
+      "Connection haipatikani."
+    );
+
+    return;
+  }
+
+  const amount =
+    Number(
+      post.unlock_price ||
+      10000
+    );
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient.rpc(
+      "create_payment",
+      {
+        p_post_id:
+          Number(selectedPostId),
+
+        p_amount:
+          amount,
+
+        p_payment_method:
+          selectedPaymentMethod,
+
+        p_payer_phone:
+          payerPhone
+      }
+    );
+
+  if(error){
+
+    console.error(error);
+
+    payBtn.disabled =
+      false;
+
+    payBtn.textContent =
+      `Lipa TSh ${formatMoney(
+        amount
+      )} Kufungua Namba`;
+
+    toast(
+      "Malipo yameshindwa kuanzishwa."
+    );
+
+    return;
+  }
+
+  if(
+    !data ||
+    !data.length ||
+    !data[0].id
+  ){
+
+    payBtn.disabled =
+      false;
+
+    payBtn.textContent =
+      `Lipa TSh ${formatMoney(
+        amount
+      )} Kufungua Namba`;
+
+    toast(
+      "Payment haikuundwa."
+    );
+
+    return;
+  }
+
+  const payment =
+    data[0];
+
+  /*
+    ======================================================
+    MOBILIPA
+    ======================================================
+
+    API Secret haipo kwenye frontend.
+    Edge Function ndiyo inashughulikia Mobilipa.
+  */
+
+  try{
+
+    const mobilipaResponse =
+      await fetch(
+        `${SUPABASE_URL}/functions/v1/mobilipa-payment`,
+        {
+          method:"POST",
+
+          headers:{
+            "Content-Type":
+              "application/json"
+          },
+
+          body:JSON.stringify({
+
+            post_id:
+              Number(
+                selectedPostId
+              ),
+
+            payment_id:
+              Number(
+                payment.id
+              ),
+
+            phone:
+              payerPhone,
+
+            amount:
+              amount,
+
+            payment_method:
+              selectedPaymentMethod
+          })
+        }
+      );
+
+    const mobilipaData =
+      await mobilipaResponse
+        .json()
+        .catch(
+          () => ({})
+        );
+
+    if(
+      !mobilipaResponse.ok
+    ){
+
+      console.error(
+        "Mobilipa error:",
+        mobilipaData
+      );
+
+      payBtn.disabled =
+        false;
+
+      payBtn.textContent =
+        `Lipa TSh ${formatMoney(
+          amount
+        )} Kufungua Namba`;
+
+      toast(
+        "Payment request haijatumwa. Jaribu tena."
+      );
+
+      return;
+    }
+
+  }catch(mobilipaError){
+
+    console.error(
+      "Mobilipa connection error:",
+      mobilipaError
+    );
+
+    payBtn.disabled =
+      false;
+
+    payBtn.textContent =
+      `Lipa TSh ${formatMoney(
+        amount
+      )} Kufungua Namba`;
+
+    toast(
+      "Imeshindikana kuunganisha payment."
+    );
+
+    return;
+  }
+
+  /*
+    Token ni ya connection hii pekee.
+  */
+
+  if(
+    payment.unlock_token
+  ){
+
+    localStorage.setItem(
+      `connection_unlock_${selectedPostId}`,
+      payment.unlock_token
+    );
+  }
+
+  payBtn.disabled =
+    false;
+
+  payBtn.textContent =
+    `Lipa TSh ${formatMoney(
+      amount
+    )} Kufungua Namba`;
+
+  closeModal(
+    "paymentModal"
+  );
+
+  toast(
+    "Payment request imetumwa. Thibitisha kwenye simu yako."
+  );
+
+  /*
+    Hapa status inaweza bado kuwa pending.
+    Baada ya Mobilipa webhook kuweka status = paid,
+    RPC itaruhusu namba kuonekana.
+  */
+
+  // Subiri malipo yakamilike
+let paymentPaid = false;
+
+for(let i = 0; i < 30; i++){
+
+  await new Promise(
+    resolve => setTimeout(resolve, 3000)
+  );
+
+  const token =
+    localStorage.getItem(
+      `connection_unlock_${selectedPostId}`
+    );
+
+  if(!token) continue;
+
+  const { data: unlockedPhone, error } =
+    await supabaseClient.rpc(
+      "get_unlocked_phone",
+      {
+        p_post_id:
+          Number(selectedPostId),
+
+        p_unlock_token:
+          token
+      }
+    );
+
+  if(!error && unlockedPhone){
+
+    paymentPaid = true;
+
+    await loadUnlockedPhone(
+      selectedPostId
+    );
+
+    renderPosts();
+
+    toast(
+      "Malipo yamekamilika. Namba imefunguliwa."
+    );
+
+    break;
+  }
+}
+
+if(!paymentPaid){
+
+  toast(
+    "Malipo bado hayajakamilika. Ukishathibitisha malipo, fungua connection tena."
+  );
+}
+}
+
+/* =========================================================
+   CREATE POST
+========================================================= */
+
+async function createPost(){
+
+  if(!isAdmin){
+
+    toast(
+      "Admin pekee."
+    );
+
+    return;
+  }
+
+  const title =
+    document
+      .getElementById(
+        "postTitle"
+      )
+      .value
+      .trim();
+
+  const location =
+    document
+      .getElementById(
+        "postLocation"
+      )
+      .value
+      .trim();
+
+  const description =
+    document
+      .getElementById(
+        "postDescription"
+      )
+      .value
+      .trim();
+
+  const phone =
+    document
+      .getElementById(
+        "postPhone"
+      )
+      .value
+      .trim();
+
+  const file =
+    document
+      .getElementById(
+        "postFile"
+      )
+      .files[0];
+
+  if(
+    !title ||
+    !location ||
+    !phone ||
+    !file
+  ){
+
+    toast(
+      "Jaza title, location, namba na media."
+    );
+
+    return;
+  }
+
+  const publishBtn =
+    document.getElementById(
+      "publishBtn"
+    );
+
+  publishBtn.disabled =
+    true;
+
+  publishBtn.textContent =
+    "Inapakia...";
+
+  try{
+
+    const extension =
+      file.name
+        .split(".")
+        .pop()
+        .toLowerCase();
+
+    const fileName =
+      `${Date.now()}_${Math.random()
+        .toString(36)
+        .slice(2)}.${extension}`;
+
+    const filePath =
+      `connections/${fileName}`;
+
+    const upload =
+      await supabaseClient
+        .storage
+        .from("media")
+        .upload(
+          filePath,
+          file,
+          {
+            upsert:false,
+            contentType:file.type
+          }
+        );
+
+    if(upload.error){
+
+      throw upload.error;
+    }
+
+    const publicResult =
+      supabaseClient
+        .storage
+        .from("media")
+        .getPublicUrl(
+          filePath
+        );
+
+    const image_url =
+      publicResult
+        .data
+        .publicUrl;
+
+    const postResult =
+      await supabaseClient
+        .from("post")
+        .insert({
+          title,
+          location,
+          description,
+          image_url,
+          unlock_price:10000,
+          is_new:true,
+          user_id:null
+        })
+        .select()
+        .single();
+
+    if(postResult.error){
+
+      throw postResult.error;
+    }
+
+    const postId =
+      postResult.data.id;
+
+    const contactResult =
+      await supabaseClient
+        .from("post_contacts")
+        .insert({
+          post_id:
+            postId,
+
+          phone:
+            phone
+        });
+
+    if(contactResult.error){
+
+      throw contactResult.error;
+    }
+
+    document
+      .getElementById(
+        "postTitle"
+      )
+      .value = "";
+
+    document
+      .getElementById(
+        "postLocation"
+      )
+      .value = "";
+
+    document
+      .getElementById(
+        "postDescription"
+      )
+      .value = "";
+
+    document
+      .getElementById(
+        "postPhone"
+      )
+      .value = "";
+
+    document
+      .getElementById(
+        "postFile"
+      )
+      .value = "";
+
+    closeModal(
+      "postModal"
+    );
+
+    toast(
+      "Connection imewekwa."
+    );
+
+    await loadPosts();
+
+  }catch(error){
+
+    console.error(error);
+
+    toast(
+      error.message ||
+      "Imeshindikana kuweka connection."
+    );
+
+  }finally{
+
+    publishBtn.disabled =
+      false;
+
+    publishBtn.textContent =
+      "Publish Connection";
+  }
+}
+
+/* =========================================================
+   DELETE POST
+========================================================= */
+
+async function deletePost(
+  postId
+){
+
+  if(!isAdmin){
+
+    toast(
+      "Admin pekee."
+    );
+
+    return;
+  }
+
+  const post =
+    allPosts.find(
+      p =>
+        Number(p.id) ===
+        Number(postId)
+    );
+
+  if(!post){
+
+    toast(
+      "Connection haipo."
+    );
+
+    return;
+  }
+
+  const confirmed =
+    confirm(
+      `Futa connection "${
+        post.title ||
+        "Connection"
+      }"?`
+    );
+
+  if(!confirmed) return;
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient.rpc(
+      "admin_delete_post",
+      {
+        p_post_id:
+          Number(postId)
+      }
+    );
+
+  if(error){
+
+    console.error(error);
+
+    toast(
+      "Imeshindikana kufuta: " +
+      (
+        error.message ||
+        "Error"
+      )
+    );
+
+    return;
+  }
+
+  delete adminPhones[
+    postId
+  ];
+
+  delete unlockedPhones[
+    postId
+  ];
+
+  localStorage.removeItem(
+    `connection_unlock_${postId}`
+  );
+
+  favorites =
+    favorites.filter(
+      x =>
+        Number(x) !==
+        Number(postId)
+    );
+
+  localStorage.setItem(
+    "connection_favorites",
+    JSON.stringify(
+      favorites
+    )
+  );
+
+  toast(
+    "Connection imefutwa."
+  );
+
+  await loadPosts();
+}
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function formatMoney(
+  number
+){
+
+  return Number(
+    number || 0
+  )
+    .toLocaleString(
+      "en-US"
+    );
+}
+
+function escapeHTML(
+  value
+){
+
+  return String(
+    value ?? ""
+  )
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+    .replace(
+      /</g,
+      "&lt;"
+    )
+    .replace(
+      />/g,
+      "&gt;"
+    )
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+    .replace(
+      /'/g,
+      "&#039;"
+    );
+}
+
+function escapeAttribute(
+  value
+){
+
+  return escapeHTML(
+    value
+  );
+}
+
+/* =========================================================
+   MODAL CLICK OUTSIDE
+========================================================= */
+
+document
+  .querySelectorAll(
+    ".modal"
+  )
+  .forEach(
+    modal => {
+
+      modal.addEventListener(
+        "click",
+        function(e){
+
+          if(
+            e.target ===
+            modal
+          ){
+
+            modal.classList.remove(
+              "show"
+            );
+          }
+        }
+      );
+
+    }
+  );
+
+/* =========================================================
+   START
+========================================================= */
+
+(async function(){
+
+  await loadPosts();
+
+  await loadAllUnlockedPhones();
+
+  renderPosts();
+
+})();
+</script>
+<div
+  class="media-modal"
+  id="mediaModal"
+  onclick="closeMedia()"
+>
+
+  <button
+    class="media-close"
+    onclick="event.stopPropagation(); closeMedia()"
+  >
+    ×
+  </button>
+
+  <div
+  id="mediaPreview"
+  onclick="event.stopPropagation()"
+></div>
+  
+
+</div>
+</body>
+</html>
