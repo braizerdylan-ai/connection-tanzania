@@ -2025,44 +2025,63 @@ function closeModal(id){
 let galleryItems = [];
 let galleryIndex = 0;
 
-function openMedia(src, postId){
-
-  const post = (filteredPosts || []).find(
-    p => String(p.id) === String(postId)
-  );
+function openMedia(src, postId) {
+  const posts = Array.isArray(filteredPosts) ? filteredPosts : [];
+  const post = posts.find(p => String(p.id) === String(postId));
 
   galleryItems = post && Array.isArray(post.media) && post.media.length
     ? post.media
-    : [{ media_url: src, media_type: /\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(src) ? "video" : "image" }];
+    : [{
+        media_url: src,
+        media_type: /\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(src)
+          ? "video"
+          : "image"
+      }];
 
-  galleryIndex = Math.max(
-    0,
-    galleryItems.findIndex(item => item.media_url === src)
+  galleryIndex = galleryItems.findIndex(item =>
+    (item.media_url || item.url || item.image_url) === src
   );
+
+  if (galleryIndex < 0) galleryIndex = 0;
 
   showGalleryItem();
   document.getElementById("mediaModal").classList.add("show");
 }
 
-function showGalleryItem(){
-
+function showGalleryItem() {
   const preview = document.getElementById("mediaPreview");
   const item = galleryItems[galleryIndex];
 
-  if (!item) return;
+  if (!preview || !item) return;
 
-  const src = item.media_url || "";
+  const src = item.media_url || item.url || item.image_url || "";
   const isVideo =
     item.media_type === "video" ||
     /\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(src);
 
-  preview.innerHTML = isVideo
-    ? `<video src="${escapeAttribute(src)}" controls autoplay playsinline style="max-width:100%;max-height:90vh;"></video>`
-    : `<img src="${escapeAttribute(src)}" alt="Preview" style="max-width:100%;max-height:90vh;object-fit:contain;">`;
+  preview.innerHTML = "";
+
+  if (isVideo) {
+    const video = document.createElement("video");
+    video.src = src;
+    video.controls = true;
+    video.autoplay = true;
+    video.playsInline = true;
+    video.style.maxWidth = "100%";
+    video.style.maxHeight = "90vh";
+    preview.appendChild(video);
+  } else {
+    const img = document.createElement("img");
+    img.src = src;
+    img.alt = "Preview";
+    img.style.maxWidth = "100%";
+    img.style.maxHeight = "90vh";
+    img.style.objectFit = "contain";
+    preview.appendChild(img);
+  }
 }
 
-function gallerySwipe(direction){
-
+function gallerySwipe(direction) {
   if (galleryItems.length < 2) return;
 
   galleryIndex =
@@ -2072,14 +2091,25 @@ function gallerySwipe(direction){
   showGalleryItem();
 }
 
+function closeMedia() {
+  const modal = document.getElementById("mediaModal");
+  const preview = document.getElementById("mediaPreview");
 
-  document
-    .getElementById("mediaModal")
-    .classList.remove("show");
+  if (modal) modal.classList.remove("show");
 
-  document
-    .getElementById("mediaPreview")
-    .innerHTML = "";
+  if (preview) {
+    const video = preview.querySelector("video");
+    if (video) {
+      video.pause();
+      video.removeAttribute("src");
+      video.load();
+    }
+
+    preview.innerHTML = "";
+  }
+
+  galleryItems = [];
+  galleryIndex = 0;
 }
 
 function openAdminModal(){
