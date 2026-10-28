@@ -3467,220 +3467,125 @@ if(!paymentPaid){
 async function createPost(){
 
   if(!isAdmin){
-
-    toast(
-      "Admin pekee."
-    );
-
+    toast("Admin pekee.");
     return;
   }
 
-  const title =
-    document
-      .getElementById(
-        "postTitle"
-      )
-      .value
-      .trim();
+  const title = document.getElementById("postTitle").value.trim();
+  const location = document.getElementById("postLocation").value.trim();
+  const description = document.getElementById("postDescription").value.trim();
+  const phone = document.getElementById("postPhone").value.trim();
+  const files = Array.from(document.getElementById("postFile").files);
 
-  const location =
-    document
-      .getElementById(
-        "postLocation"
-      )
-      .value
-      .trim();
-
-  const description =
-    document
-      .getElementById(
-        "postDescription"
-      )
-      .value
-      .trim();
-
-  const phone =
-    document
-      .getElementById(
-        "postPhone"
-      )
-      .value
-      .trim();
-
-  const file =
-    document
-      .getElementById(
-        "postFile"
-      )
-      .files[0];
-
-  if(
-    !title ||
-    !location ||
-    !phone ||
-    !file
-  ){
-
-    toast(
-      "Jaza title, location, namba na media."
-    );
-
+  if(!title || !location || !phone || files.length === 0){
+    toast("Jaza title, location, namba na media.");
     return;
   }
 
-  const publishBtn =
-    document.getElementById(
-      "publishBtn"
-    );
+  const images = files.filter(file => file.type.startsWith("image/"));
+  const videos = files.filter(file => file.type.startsWith("video/"));
 
-  publishBtn.disabled =
-    true;
+  if(images.length > 3 || videos.length > 1 || images.length + videos.length !== files.length){
+    toast("Chagua picha zisizozidi 3 na video 1 pekee.");
+    return;
+  }
 
-  publishBtn.textContent =
-    "Inapakia...";
+  const publishBtn = document.getElementById("publishBtn");
+  publishBtn.disabled = true;
+  publishBtn.textContent = "Inapakia...";
 
   try{
 
-    const extension =
-      file.name
-        .split(".")
-        .pop()
-        .toLowerCase();
+    const uploadedMedia = [];
 
-    const fileName =
-      `${Date.now()}_${Math.random()
-        .toString(36)
-        .slice(2)}.${extension}`;
+    for(let i = 0; i < files.length; i++){
 
-    const filePath =
-      `connections/${fileName}`;
+      const file = files[i];
+      const extension = file.name.split(".").pop().toLowerCase();
+      const fileName = `${Date.now()}_${i}_${Math.random().toString(36).slice(2)}.${extension}`;
+      const filePath = `connections/${fileName}`;
 
-    const upload =
-      await supabaseClient
+      const upload = await supabaseClient
         .storage
         .from("media")
-        .upload(
-          filePath,
-          file,
-          {
-            upsert:false,
-            contentType:file.type
-          }
-        );
-
-    if(upload.error){
-
-      throw upload.error;
-    }
-
-    const publicResult =
-      supabaseClient
-        .storage
-        .from("media")
-        .getPublicUrl(
-          filePath
-        );
-
-    const image_url =
-      publicResult
-        .data
-        .publicUrl;
-
-    const postResult =
-      await supabaseClient
-        .from("post")
-        .insert({
-          title,
-          location,
-          description,
-          image_url,
-          unlock_price:10000,
-          is_new:true,
-          user_id:null
-        })
-        .select()
-        .single();
-
-    if(postResult.error){
-
-      throw postResult.error;
-    }
-
-    const postId =
-      postResult.data.id;
-
-    const contactResult =
-      await supabaseClient
-        .from("post_contacts")
-        .insert({
-          post_id:
-            postId,
-
-          phone:
-            phone
+        .upload(filePath, file, {
+          upsert: false,
+          contentType: file.type
         });
 
-    if(contactResult.error){
+      if(upload.error) throw upload.error;
 
-      throw contactResult.error;
+      const publicResult = supabaseClient
+        .storage
+        .from("media")
+        .getPublicUrl(filePath);
+
+      uploadedMedia.push({
+        media_url: publicResult.data.publicUrl,
+        media_type: file.type.startsWith("video/") ? "video" : "image",
+        sort_order: i
+      });
     }
 
-    document
-      .getElementById(
-        "postTitle"
-      )
-      .value = "";
+    const postResult = await supabaseClient
+      .from("post")
+      .insert({
+        title,
+        location,
+        description,
+        image_url: uploadedMedia[0].media_url,
+        unlock_price: 10000,
+        is_new: true,
+        user_id: null
+      })
+      .select()
+      .single();
 
-    document
-      .getElementById(
-        "postLocation"
-      )
-      .value = "";
+    if(postResult.error) throw postResult.error;
 
-    document
-      .getElementById(
-        "postDescription"
-      )
-      .value = "";
+    const postId = postResult.data.id;
 
-    document
-      .getElementById(
-        "postPhone"
-      )
-      .value = "";
+    const mediaRows = uploadedMedia.map(media => ({
+      post_id: postId,
+      media_url: media.media_url,
+      media_type: media.media_type,
+      sort_order: media.sort_order
+    }));
 
-    document
-      .getElementById(
-        "postFile"
-      )
-      .value = "";
+    const mediaResult = await supabaseClient
+      .from("post_media")
+      .insert(mediaRows);
 
-    closeModal(
-      "postModal"
-    );
+    if(mediaResult.error) throw mediaResult.error;
 
-    toast(
-      "Connection imewekwa."
-    );
+    const contactResult = await supabaseClient
+      .from("post_contacts")
+      .insert({
+        post_id: postId,
+        phone: phone
+      });
 
+    if(contactResult.error) throw contactResult.error;
+
+    document.getElementById("postTitle").value = "";
+    document.getElementById("postLocation").value = "";
+    document.getElementById("postDescription").value = "";
+    document.getElementById("postPhone").value = "";
+    document.getElementById("postFile").value = "";
+
+    closeModal("postModal");
+    toast("Connection imewekwa.");
     await loadPosts();
 
   }catch(error){
 
     console.error(error);
-
-    toast(
-      error.message ||
-      "Imeshindikana kuweka connection."
-    );
+    toast(error.message || "Imeshindikana kuweka connection.");
 
   }finally{
 
-    publishBtn.disabled =
-      false;
-
-    publishBtn.textContent =
-      "Publish Connection";
+    publishBtn.disabled = false;
+    publishBtn.textContent = "Publish Connection";
   }
 }
 
