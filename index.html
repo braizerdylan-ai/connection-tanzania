@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+f<!DOCTYPE html>
 <html lang="sw">
 <head>
 <meta charset="UTF-8">
@@ -2606,44 +2606,62 @@ if(currentView === "premium"){
         String(post.id)
       );
 
-    const media =
-      post.image_url || "";
+    const mediaItems =
+  Array.isArray(post.media) && post.media.length
+    ? post.media
+    : post.image_url
+      ? [{
+          media_url: post.image_url,
+          media_type: /\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(post.image_url)
+            ? "video"
+            : "image"
+        }]
+      : [];
 
-    let mediaHTML = "";
+let mediaHTML = "";
 
-    if(
-      media.match(
-        /\.(mp4|webm|mov|m4v)(\?.*)?$/i
-      )
-    ){
+if(mediaItems.length){
 
-      mediaHTML = `
-        <video
-  src="${escapeAttribute(media)}"
-  controls
-  muted
-  playsinline
-  onclick="openMedia('${escapeAttribute(media)}')"
-  style="cursor:pointer"
-></video>
-      `;
+  mediaHTML = `
+    <div class="connection-media-list">
+      ${mediaItems.map(item => {
 
-    }else{
+        const media = item.media_url || "";
 
-      mediaHTML = `
-  <img
-    src="${escapeAttribute(media)}"
-    onclick="openMedia('${escapeAttribute(media)}')"
-    style="cursor:pointer"
-          alt="${escapeAttribute(
-            post.title ||
-            "Connection"
-          )}"
-          loading="lazy"
-          onerror="this.style.display='none'"
-        >
-      `;
-    }
+        if(
+          item.media_type === "video" ||
+          /\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(media)
+        ){
+
+          return `
+            <video
+              src="${escapeAttribute(media)}"
+              controls
+              muted
+              playsinline
+              onclick="openMedia('${escapeAttribute(media)}')"
+              style="cursor:pointer;width:100%;max-height:400px;object-fit:contain;"
+            ></video>
+          `;
+
+        }
+
+        return `
+          <img
+            src="${escapeAttribute(media)}"
+            onclick="openMedia('${escapeAttribute(media)}')"
+            style="cursor:pointer;width:100%;max-height:400px;object-fit:contain;"
+            alt="${escapeAttribute(post.title || "Connection")}"
+            loading="lazy"
+            onerror="this.style.display='none'"
+          >
+        `;
+
+      }).join("")}
+    </div>
+  `;
+
+}
 
     let actionHTML = "";
 
