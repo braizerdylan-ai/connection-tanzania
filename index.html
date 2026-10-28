@@ -2029,14 +2029,17 @@ function openMedia(src, postId) {
   const posts = Array.isArray(filteredPosts) ? filteredPosts : [];
   const post = posts.find(p => String(p.id) === String(postId));
 
-  galleryItems = post && Array.isArray(post.media) && post.media.length
-    ? post.media
-    : [{
-        media_url: src,
-        media_type: /\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(src)
-          ? "video"
-          : "image"
-      }];
+  galleryItems =
+    post && Array.isArray(post.media) && post.media.length
+      ? post.media
+      : [
+          {
+            media_url: src,
+            media_type: /\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(src)
+              ? "video"
+              : "image"
+          }
+        ];
 
   galleryIndex = galleryItems.findIndex(item =>
     (item.media_url || item.url || item.image_url) === src
@@ -2045,7 +2048,9 @@ function openMedia(src, postId) {
   if (galleryIndex < 0) galleryIndex = 0;
 
   showGalleryItem();
-  document.getElementById("mediaModal").classList.add("show");
+
+  const modal = document.getElementById("mediaModal");
+  if (modal) modal.classList.add("show");
 }
 
 function showGalleryItem() {
@@ -2055,6 +2060,7 @@ function showGalleryItem() {
   if (!preview || !item) return;
 
   const src = item.media_url || item.url || item.image_url || "";
+
   const isVideo =
     item.media_type === "video" ||
     /\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(src);
@@ -2069,6 +2075,7 @@ function showGalleryItem() {
     video.playsInline = true;
     video.style.maxWidth = "100%";
     video.style.maxHeight = "90vh";
+
     preview.appendChild(video);
   } else {
     const img = document.createElement("img");
@@ -2077,6 +2084,7 @@ function showGalleryItem() {
     img.style.maxWidth = "100%";
     img.style.maxHeight = "90vh";
     img.style.objectFit = "contain";
+
     preview.appendChild(img);
   }
 }
@@ -2095,10 +2103,13 @@ function closeMedia() {
   const modal = document.getElementById("mediaModal");
   const preview = document.getElementById("mediaPreview");
 
-  if (modal) modal.classList.remove("show");
+  if (modal) {
+    modal.classList.remove("show");
+  }
 
   if (preview) {
     const video = preview.querySelector("video");
+
     if (video) {
       video.pause();
       video.removeAttribute("src");
@@ -2112,12 +2123,9 @@ function closeMedia() {
   galleryIndex = 0;
 }
 
-function openAdminModal(){
-
-  if(isAdmin){
-
+function openAdminModal() {
+  if (isAdmin) {
     adminLogout();
-
     return;
   }
 
