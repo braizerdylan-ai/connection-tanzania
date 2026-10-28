@@ -2253,44 +2253,41 @@ function setupGallerySwipe() {
 
 /* Modal iko chini ya script, hivyo subiri HTML ipakiwe */
 document.addEventListener("DOMContentLoaded", setupGallerySwipe);
-/* Kitufe cha Back cha CONNECTION TANZANIA */
+/* KITufe cha BACK cha CONNECTION TANZANIA */
 (function setupAppBackButton() {
-  let backStateActive = false;
+  window.isHandlingAppBack = false;
 
-  function addBackState() {
-    if (backStateActive) return;
-
-    history.pushState(
-      { connectionApp: true },
-      "",
-      location.href
-    );
-
-    backStateActive = true;
-  }
-
-  addBackState();
-
-  window.addEventListener("popstate", function () {
-    backStateActive = false;
-
+  window.addEventListener("popstate", function (event) {
     const mediaModal = document.getElementById("mediaModal");
 
     if (mediaModal && mediaModal.classList.contains("show")) {
       closeMedia();
-    } else {
-      const openModalElement = document.querySelector(
-        ".modal.show, .media-modal.show"
-      );
-
-      if (openModalElement && openModalElement.id !== "mediaModal") {
-        openModalElement.classList.remove("show");
-      }
+      return;
     }
 
-    addBackState();
+    const openModalElement = document.querySelector(".modal.show");
+
+    if (openModalElement) {
+      openModalElement.classList.remove("show");
+      return;
+    }
+
+    if (event.state && event.state.connectionApp && event.state.view) {
+      window.isHandlingAppBack = true;
+
+      const previousView = event.state.view;
+
+      if (previousView === "home") showHome(null);
+      else if (previousView === "trending") showTrending(null);
+      else if (previousView === "premium") showPremium(null);
+      else if (previousView === "new") showNew(null);
+      else if (previousView === "favorites") showFavorites(null);
+
+      window.isHandlingAppBack = false;
+    }
   });
 })();
+
 function openAdminModal() {
   if (isAdmin) {
     adminLogout();
@@ -3101,58 +3098,47 @@ function setActiveNav(id){
   }
 }
 
-function showHome(el){
+function saveViewHistory() {
+  if (window.isHandlingAppBack) return;
 
-  currentView =
-    "home";
-
-  setActiveCategory(el);
-
-  setActiveNav(
-    "navHome"
+  history.pushState(
+    {
+      connectionApp: true,
+      view: currentView
+    },
+    "",
+    location.href
   );
+}
 
-  document
-    .getElementById(
-      "postsHeading"
-    )
-    .textContent =
-      "Connection mpya";
+function showHome(el) {
+  saveViewHistory();
 
-  document
-    .getElementById(
-      "postsSubheading"
-    )
-    .textContent =
-      "Chagua connection unayoipenda";
+  currentView = "home";
+  setActiveCategory(el);
+  setActiveNav("navHome");
+
+  document.getElementById("postsHeading").textContent =
+    "Connection mpya";
+
+  document.getElementById("postsSubheading").textContent =
+    "Chagua connection unayoipenda";
 
   renderPosts();
 }
 
-function showTrending(el){
+function showTrending(el) {
+  saveViewHistory();
 
-  currentView =
-    "trending";
-
+  currentView = "trending";
   setActiveCategory(el);
+  setActiveNav("navTrending");
 
-  setActiveNav(
-    "navTrending"
-  );
+  document.getElementById("postsHeading").textContent =
+    "Trending";
 
-  document
-    .getElementById(
-      "postsHeading"
-    )
-    .textContent =
-      "Trending";
-
-  document
-    .getElementById(
-      "postsSubheading"
-    )
-    .textContent =
-      "Connections zinazovuma";
+  document.getElementById("postsSubheading").textContent =
+    "Connections zinazovuma";
 
   renderPosts();
 }
@@ -3183,58 +3169,34 @@ function showPremium(el){
 
   renderPosts();
 }
-function showNew(el){
+function showNew(el) {
+  saveViewHistory();
 
-  currentView =
-    "new";
-
+  currentView = "new";
   setActiveCategory(el);
+  setActiveNav("navNew");
 
-  setActiveNav(
-    "navNew"
-  );
+  document.getElementById("postsHeading").textContent =
+    "Mpya";
 
-  document
-    .getElementById(
-      "postsHeading"
-    )
-    .textContent =
-      "Mpya";
-
-  document
-    .getElementById(
-      "postsSubheading"
-    )
-    .textContent =
-      "Connections zilizowekwa hivi karibuni";
+  document.getElementById("postsSubheading").textContent =
+    "Connections zilizowekwa hivi karibuni";
 
   renderPosts();
 }
 
-function showFavorites(el){
+function showFavorites(el) {
+  saveViewHistory();
 
-  currentView =
-    "favorites";
-
+  currentView = "favorites";
   setActiveCategory(el);
+  setActiveNav("navFavorites");
 
-  setActiveNav(
-    "navFavorites"
-  );
+  document.getElementById("postsHeading").textContent =
+    "Favorites";
 
-  document
-    .getElementById(
-      "postsHeading"
-    )
-    .textContent =
-      "Favorites";
-
-  document
-    .getElementById(
-      "postsSubheading"
-    )
-    .textContent =
-      "Connections ulizozipenda";
+  document.getElementById("postsSubheading").textContent =
+    "Connections ulizozipenda";
 
   renderPosts();
 }
