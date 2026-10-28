@@ -2253,7 +2253,36 @@ function setupGallerySwipe() {
 
 /* Modal iko chini ya script, hivyo subiri HTML ipakiwe */
 document.addEventListener("DOMContentLoaded", setupGallerySwipe);
+/* Kitufe cha Back cha CONNECTION TANZANIA */
+(function setupAppBackButton() {
+  let backStateActive = false;
 
+  function addBackState() {
+    if (backStateActive) return;
+
+    history.pushState(
+      { connectionApp: true },
+      "",
+      location.href
+    );
+
+    backStateActive = true;
+  }
+
+  addBackState();
+
+  window.addEventListener("popstate", function () {
+    backStateActive = false;
+
+    const mediaModal = document.getElementById("mediaModal");
+
+    if (mediaModal && mediaModal.classList.contains("show")) {
+      closeMedia();
+    }
+
+    addBackState();
+  });
+})();
 function openAdminModal() {
   if (isAdmin) {
     adminLogout();
