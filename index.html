@@ -426,7 +426,23 @@ body.dark-mode .close-btn{
   object-fit:contain;
   display:block;
 }
+.connection-media-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
 
+.connection-media-list img,
+.connection-media-list video {
+  display: block;
+  position: static;
+  width: 100%;
+  height: auto;
+  max-height: 400px;
+  object-fit: contain;
+}
+  
 .favorite-btn{
   position:absolute;
   top:9px;
