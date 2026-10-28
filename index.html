@@ -2708,6 +2708,15 @@ if (mediaItems.length) {
     firstMedia.media_type === "video" ||
     /\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(firstUrl);
 
+  let mediaHTML = "";
+
+if (mediaItems.length) {
+  const firstMedia = mediaItems[0];
+  const firstUrl = firstMedia.media_url || "";
+  const isVideo =
+    firstMedia.media_type === "video" ||
+    /\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(firstUrl);
+
   mediaHTML = `
     <div class="connection-media-list">
       ${
@@ -2728,54 +2737,41 @@ if (mediaItems.length) {
                loading="lazy"
              >`
       }
+    </div>
+  `;
+}
 
 let actionHTML = "";
 
-    if(
-      !isAdmin &&
-      !unlockedPhone
-    ){
+if (!isAdmin && !unlockedPhone) {
+  actionHTML = `
+    <button
+      class="unlock-btn"
+      onclick="openPayment(
+        ${Number(post.id)},
+        ${Number(post.unlock_price || 10000)}
+      )"
+    >
+      Lipa TSh ${formatMoney(post.unlock_price || 10000)}
+      Kufungua Namba
+    </button>
+  `;
+}
 
-      actionHTML = `
-        <button
-          class="unlock-btn"
-          onclick="openPayment(
-            ${Number(post.id)},
-            ${Number(
-              post.unlock_price ||
-              10000
-            )}
-          )"
-        >
-          Lipa TSh
-          ${formatMoney(
-            post.unlock_price ||
-            10000
-          )}
-          Kufungua Namba
-        </button>
-      `;
-    }
+let adminHTML = "";
 
-    let adminHTML = "";
-
-    if(isAdmin){
-
-      adminHTML = `
-        <div class="admin-actions">
-
-          <button
-            class="delete-btn"
-            onclick="deletePost(
-              ${Number(post.id)}
-            )"
-          >
-            Futa Connection
-          </button>
-
-        </div>
-      `;
-    }
+if (isAdmin) {
+  adminHTML = `
+    <div class="admin-actions">
+      <button
+        class="delete-btn"
+        onclick="deletePost(${Number(post.id)})"
+      >
+        Futa Connection
+      </button>
+    </div>
+  `;
+}
 
     const card =
       document.createElement(
