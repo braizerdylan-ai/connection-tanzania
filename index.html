@@ -1,4 +1,4 @@
-f<!DOCTYPE html>
+ f<!DOCTYPE html>
 <html lang="sw">
 <head>
 <meta charset="UTF-8">
@@ -427,16 +427,19 @@ body.dark-mode .close-btn{
   display:block;
 }
 .connection-media-list {
-  display: block;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
   width: 100%;
 }
 
 .connection-media-list img,
 .connection-media-list video {
   display: block;
+  position: static;
   width: 100%;
-  height: 240px;
-  max-height: 240px;
+  height: 150px;
+  max-height: 150px;
   object-fit: cover;
   border-radius: 8px;
 }
@@ -2074,74 +2077,7 @@ function openMedia(src){
     .classList.add("show");
 }
 
-function openPostGallery(postId, startIndex = 0) {
-  const post = allPosts.find(
-    item => String(item.id) === String(postId)
-  );
-
-  if (!post) return;
-
-  const items = Array.isArray(post.media) && post.media.length
-    ? post.media
-    : post.image_url
-      ? [{ media_url: post.image_url, media_type: "image" }]
-      : [];
-
-  if (!items.length) return;
-
-  let index = startIndex;
-  let startX = 0;
-  let startY = 0;
-
-  const preview = document.getElementById("mediaPreview");
-  const modal = document.getElementById("mediaModal");
-
-  function showItem() {
-    const item = items[index];
-    const src = item.media_url || "";
-    const isVideo =
-      item.media_type === "video" ||
-      /\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(src);
-
-    preview.innerHTML = `
-      <div style="width:100%;display:flex;justify-content:center;align-items:center">
-        ${
-          isVideo
-            ? `<video src="${escapeAttribute(src)}" controls playsinline style="max-width:100%;max-height:85vh;object-fit:contain"></video>`
-            : `<img src="${escapeAttribute(src)}" alt="Connection" draggable="false" style="max-width:100%;max-height:85vh;object-fit:contain;user-select:none">`
-        }
-      </div>
-    `;
-
-    preview.ontouchstart = function(event) {
-      startX = event.changedTouches[0].screenX;
-      startY = event.changedTouches[0].screenY;
-    };
-
-    preview.ontouchend = function(event) {
-      const endX = event.changedTouches[0].screenX;
-      const endY = event.changedTouches[0].screenY;
-      const diffX = endX - startX;
-      const diffY = endY - startY;
-
-      if (
-        items.length > 1 &&
-        Math.abs(diffX) > 50 &&
-        Math.abs(diffX) > Math.abs(diffY)
-      ) {
-        index = diffX < 0
-          ? (index + 1) % items.length
-          : (index - 1 + items.length) % items.length;
-
-        showItem();
-      }
-    };
-  }
-
-  showItem();
-  modal.classList.add("show");
-}
-  function closeMedia(){
+function closeMedia(){
 
   document
     .getElementById("mediaModal")
@@ -2701,77 +2637,96 @@ if(currentView === "premium"){
 
 let mediaHTML = "";
 
-if (mediaItems.length) {
-  const firstMedia = mediaItems[0];
-  const firstUrl = firstMedia.media_url || "";
-  const isVideo =
-    firstMedia.media_type === "video" ||
-    /\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(firstUrl);
-
-  let mediaHTML = "";
-
-if (mediaItems.length) {
-  const firstMedia = mediaItems[0];
-  const firstUrl = firstMedia.media_url || "";
-  const isVideo =
-    firstMedia.media_type === "video" ||
-    /\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(firstUrl);
+if(mediaItems.length){
 
   mediaHTML = `
     <div class="connection-media-list">
-      ${
-        isVideo
-          ? `<video
-               src="${escapeAttribute(firstUrl)}"
-               controls
-               muted
-               playsinline
-               onclick="openPostGallery('${post.id}',0)"
-               style="cursor:pointer;width:100%;height:240px;object-fit:cover;border-radius:8px;"
-             ></video>`
-          : `<img
-               src="${escapeAttribute(firstUrl)}"
-               onclick="openPostGallery('${post.id}',0)"
-               style="cursor:pointer;width:100%;height:240px;object-fit:cover;border-radius:8px;"
-               alt="${escapeAttribute(post.title || "Connection")}"
-               loading="lazy"
-             >`
-      }
+      ${mediaItems.map(item => {
+
+        const media = item.media_url || "";
+
+        if(
+          item.media_type === "video" ||
+          /\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(media)
+        ){
+
+          return `
+            <video
+              src="${escapeAttribute(media)}"
+              controls
+              muted
+              playsinline
+              onclick="openMedia('${escapeAttribute(media)}')"
+              style="cursor:pointer;width:100%;max-height:400px;object-fit:contain;"
+            ></video>
+          `;
+
+        }
+
+        return `
+          <img
+            src="${escapeAttribute(media)}"
+            onclick="openMedia('${escapeAttribute(media)}')"
+            style="cursor:pointer;width:100%;max-height:400px;object-fit:contain;"
+            alt="${escapeAttribute(post.title || "Connection")}"
+            loading="lazy"
+            onerror="this.style.display='none'"
+          >
+        `;
+
+      }).join("")}
     </div>
   `;
+
 }
 
-let actionHTML = "";
+    let actionHTML = "";
 
-if (!isAdmin && !unlockedPhone) {
-  actionHTML = `
-    <button
-      class="unlock-btn"
-      onclick="openPayment(
-        ${Number(post.id)},
-        ${Number(post.unlock_price || 10000)}
-      )"
-    >
-      Lipa TSh ${formatMoney(post.unlock_price || 10000)}
-      Kufungua Namba
-    </button>
-  `;
-}
+    if(
+      !isAdmin &&
+      !unlockedPhone
+    ){
 
-let adminHTML = "";
+      actionHTML = `
+        <button
+          class="unlock-btn"
+          onclick="openPayment(
+            ${Number(post.id)},
+            ${Number(
+              post.unlock_price ||
+              10000
+            )}
+          )"
+        >
+          Lipa TSh
+          ${formatMoney(
+            post.unlock_price ||
+            10000
+          )}
+          Kufungua Namba
+        </button>
+      `;
+    }
 
-if (isAdmin) {
-  adminHTML = `
-    <div class="admin-actions">
-      <button
-        class="delete-btn"
-        onclick="deletePost(${Number(post.id)})"
-      >
-        Futa Connection
-      </button>
-    </div>
-  `;
-}
+    let adminHTML = "";
+
+    if(isAdmin){
+
+      adminHTML = `
+        <div class="admin-actions">
+
+          <button
+            class="delete-btn"
+            onclick="deletePost(
+              ${Number(post.id)}
+            )"
+          >
+            Futa Connection
+          </button>
+
+        </div>
+      `;
+    }
 
     const card =
       document.createElement(
