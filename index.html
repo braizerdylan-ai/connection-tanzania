@@ -2090,6 +2090,9 @@ function openPostGallery(postId, startIndex = 0) {
   if (!items.length) return;
 
   let index = startIndex;
+  let startX = 0;
+  let startY = 0;
+
   const preview = document.getElementById("mediaPreview");
   const modal = document.getElementById("mediaModal");
 
@@ -2101,31 +2104,37 @@ function openPostGallery(postId, startIndex = 0) {
       /\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(src);
 
     preview.innerHTML = `
-      <div style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%">
-        ${items.length > 1 ? `<button id="galleryPrev">❮</button>` : ""}
-        <div style="flex:1;min-width:0;text-align:center">
-          ${
-            isVideo
-              ? `<video src="${escapeAttribute(src)}" controls autoplay playsinline style="max-width:100%;max-height:80vh;object-fit:contain"></video>`
-              : `<img src="${escapeAttribute(src)}" alt="Picha ${index + 1}" style="max-width:100%;max-height:80vh;object-fit:contain">`
-          }
-        </div>
-        ${items.length > 1 ? `<button id="galleryNext">❯</button>` : ""}
+      <div style="width:100%;display:flex;justify-content:center;align-items:center">
+        ${
+          isVideo
+            ? `<video src="${escapeAttribute(src)}" controls playsinline style="max-width:100%;max-height:85vh;object-fit:contain"></video>`
+            : `<img src="${escapeAttribute(src)}" alt="Connection" draggable="false" style="max-width:100%;max-height:85vh;object-fit:contain;user-select:none">`
+        }
       </div>
-      ${items.length > 1 ? `<div style="text-align:center;color:white;padding:10px">${index + 1} / ${items.length}</div>` : ""}
     `;
 
-    const prev = document.getElementById("galleryPrev");
-    const next = document.getElementById("galleryNext");
-
-    if (prev) prev.onclick = () => {
-      index = (index - 1 + items.length) % items.length;
-      showItem();
+    preview.ontouchstart = function(event) {
+      startX = event.changedTouches[0].screenX;
+      startY = event.changedTouches[0].screenY;
     };
 
-    if (next) next.onclick = () => {
-      index = (index + 1) % items.length;
-      showItem();
+    preview.ontouchend = function(event) {
+      const endX = event.changedTouches[0].screenX;
+      const endY = event.changedTouches[0].screenY;
+      const diffX = endX - startX;
+      const diffY = endY - startY;
+
+      if (
+        items.length > 1 &&
+        Math.abs(diffX) > 50 &&
+        Math.abs(diffX) > Math.abs(diffY)
+      ) {
+        index = diffX < 0
+          ? (index + 1) % items.length
+          : (index - 1 + items.length) % items.length;
+
+        showItem();
+      }
     };
   }
 
@@ -2719,16 +2728,6 @@ if (mediaItems.length) {
                loading="lazy"
              >`
       }
-      ${
-        mediaItems.length > 1
-          ? `<div style="font-size:12px;text-align:center;padding:6px;color:var(--muted)">
-               Picha/video ${mediaItems.length} • Bonyeza kuona zote
-             </div>`
-          : ""
-      }
-    </div>
-  `;
-}
 
 let actionHTML = "";
 
