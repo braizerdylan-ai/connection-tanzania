@@ -2278,6 +2278,14 @@ document.addEventListener("DOMContentLoaded", setupGallerySwipe);
 
     if (mediaModal && mediaModal.classList.contains("show")) {
       closeMedia();
+    } else {
+      const openModalElement = document.querySelector(
+        ".modal.show, .media-modal.show"
+      );
+
+      if (openModalElement && openModalElement.id !== "mediaModal") {
+        openModalElement.classList.remove("show");
+      }
     }
 
     addBackState();
