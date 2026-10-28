@@ -716,6 +716,67 @@ body.admin-mode .add-button{
   display:block;
   border-radius:12px;
 }
+.media-gallery-content{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  height:100%;
+  gap:12px;
+}
+
+#mediaPreview{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  max-width:100%;
+  max-height:85vh;
+  touch-action:pan-y;
+}
+
+#mediaPreview img,
+#mediaPreview video{
+  display:block;
+  max-width:100%;
+  max-height:82vh;
+  width:auto;
+  height:auto;
+  object-fit:contain;
+  border-radius:10px;
+}
+
+.gallery-controls{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:18px;
+  color:white;
+}
+
+.gallery-controls button{
+  width:42px;
+  height:42px;
+  border:1px solid rgba(255,255,255,.35);
+  border-radius:50%;
+  background:rgba(255,255,255,.12);
+  color:white;
+  font-size:24px;
+  cursor:pointer;
+}
+
+.gallery-controls button:disabled{
+  opacity:.35;
+}
+
+#galleryCounter{
+  min-width:55px;
+  text-align:center;
+  font-size:13px;
+  font-weight:bold;
+} 
 
 .media-close{
   position:absolute;
@@ -2026,66 +2087,99 @@ let galleryItems = [];
 let galleryIndex = 0;
 
 function openMedia(src, postId) {
-  const posts = Array.isArray(filteredPosts) ? filteredPosts : [];
+  const posts = Array.isArray(allPosts) ? allPosts : [];
   const post = posts.find(p => String(p.id) === String(postId));
 
   galleryItems =
-    post && Array.isArray(post.media) && post.media.length
+    post && Array.isArray(post.media)
       ? post.media
-      : [
-          {
-            media_url: src,
-            media_type: /\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(src)
-              ? "video"
-              : "image"
-          }
-        ];
+          .map(item => ({
+            media_url: item.media_url || item.url || item.image_url || "",
+            media_type: item.media_type || "",
+            sort_order: item.sort_order || 0
+          }))
+          .filter(item => item.media_url)
+      : [];
 
-  galleryIndex = galleryItems.findIndex(item =>
-    (item.media_url || item.url || item.image_url) === src
+  if (galleryItems.length === 0 && src) {
+    galleryItems = [{
+      media_url: src,
+      media_type: /\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(src)
+        ? "video"
+        : "image"
+    }];
+  }
+
+  galleryIndex = galleryItems.findIndex(
+    item => item.media_url === src
   );
 
   if (galleryIndex < 0) galleryIndex = 0;
 
-  showGalleryItem();
-
   const modal = document.getElementById("mediaModal");
-  if (modal) modal.classList.add("show");
+
+  if (!modal || galleryItems.length === 0) return;
+
+  showGalleryItem();
+  modal.classList.add("show");
+  document.body.style.overflow = "hidden";
 }
 
 function showGalleryItem() {
   const preview = document.getElementById("mediaPreview");
+  const counter = document.getElementById("galleryCounter");
+  const previous = document.getElementById("galleryPrevious");
+  const next = document.getElementById("galleryNext");
   const item = galleryItems[galleryIndex];
 
   if (!preview || !item) return;
 
-  const src = item.media_url || item.url || item.image_url || "";
+  const src = item.media_url;
 
   const isVideo =
     item.media_type === "video" ||
     /\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(src);
 
-  preview.innerHTML = "";
+  const oldVideo = preview.querySelector("video");
+
+  if (oldVideo) {
+    oldVideo.pause();
+    oldVideo.removeAttribute("src");
+    oldVideo.load();
+  }
+
+  preview.replaceChildren();
 
   if (isVideo) {
     const video = document.createElement("video");
     video.src = src;
     video.controls = true;
-    video.autoplay = true;
     video.playsInline = true;
+    video.preload = "metadata";
     video.style.maxWidth = "100%";
-    video.style.maxHeight = "90vh";
+    video.style.maxHeight = "82vh";
 
     preview.appendChild(video);
   } else {
     const img = document.createElement("img");
     img.src = src;
-    img.alt = "Preview";
-    img.style.maxWidth = "100%";
-    img.style.maxHeight = "90vh";
-    img.style.objectFit = "contain";
+    img.alt = "Picha ya Connection Tanzania";
+    img.draggable = false;
 
     preview.appendChild(img);
+  }
+
+  if (counter) {
+    counter.textContent =
+      `${galleryIndex + 1} / ${galleryItems.length}`;
+  }
+
+  if (previous) {
+    previous.disabled = galleryItems.length < 2;
+  }
+
+  if (next) {
+    next.disabled = galleryItems.length < 2;
   }
 }
 
@@ -2103,10 +2197,6 @@ function closeMedia() {
   const modal = document.getElementById("mediaModal");
   const preview = document.getElementById("mediaPreview");
 
-  if (modal) {
-    modal.classList.remove("show");
-  }
-
   if (preview) {
     const video = preview.querySelector("video");
 
@@ -2116,12 +2206,53 @@ function closeMedia() {
       video.load();
     }
 
-    preview.innerHTML = "";
+    preview.replaceChildren();
   }
 
+  if (modal) {
+    modal.classList.remove("show");
+  }
+
+  document.body.style.overflow = "";
   galleryItems = [];
   galleryIndex = 0;
 }
+
+/* Kutelezesha kidole kushoto au kulia kwenye simu */
+function setupGallerySwipe() {
+  const preview = document.getElementById("mediaPreview");
+
+  if (!preview || preview.dataset.swipeReady === "true") return;
+
+  preview.dataset.swipeReady = "true";
+
+  let startX = 0;
+  let startY = 0;
+
+  preview.addEventListener("touchstart", function(event) {
+    if (!event.touches.length) return;
+
+    startX = event.touches[0].clientX;
+    startY = event.touches[0].clientY;
+  }, { passive: true });
+
+  preview.addEventListener("touchend", function(event) {
+    if (!event.changedTouches.length) return;
+
+    const endX = event.changedTouches[0].clientX;
+    const endY = event.changedTouches[0].clientY;
+
+    const dx = endX - startX;
+    const dy = endY - startY;
+
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
+      gallerySwipe(dx < 0 ? 1 : -1);
+    }
+  }, { passive: true });
+}
+
+/* Modal iko chini ya script, hivyo subiri HTML ipakiwe */
+document.addEventListener("DOMContentLoaded", setupGallerySwipe);
 
 function openAdminModal() {
   if (isAdmin) {
@@ -3891,20 +4022,43 @@ document
   id="mediaModal"
   onclick="closeMedia()"
 >
-
   <button
     class="media-close"
+    type="button"
+    aria-label="Funga gallery"
     onclick="event.stopPropagation(); closeMedia()"
   >
     ×
   </button>
 
   <div
-  id="mediaPreview"
-  onclick="event.stopPropagation()"
-></div>
-  
+    class="media-gallery-content"
+    onclick="event.stopPropagation()"
+  >
+    <div id="mediaPreview"></div>
 
+    <div class="gallery-controls">
+      <button
+        id="galleryPrevious"
+        type="button"
+        aria-label="Media iliyotangulia"
+        onclick="gallerySwipe(-1)"
+      >
+        ‹
+      </button>
+
+      <span id="galleryCounter">0 / 0</span>
+
+      <button
+        id="galleryNext"
+        type="button"
+        aria-label="Media inayofuata"
+        onclick="gallerySwipe(1)"
+      >
+        ›
+      </button>
+    </div>
+  </div>
 </div>
 </body>
 </html>
