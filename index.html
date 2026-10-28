@@ -2342,13 +2342,53 @@ async function loadPosts(){
     return;
   }
 
-  allPosts =
-    data || [];
+  allPosts = data || [];
+
+  const {data:mediaData,error:mediaError} =
+    await supabaseClient
+      .from("post_media")
+      .select("post_id,media_url,media_type,sort_order")
+      .order("sort_order",{ascending:true});
+
+  if(mediaError){
+
+    console.error(mediaError);
+
+    toast("Imeshindikana kusoma picha na video.");
+
+  }else{
+
+    const mediaByPost = {};
+
+    (mediaData || []).forEach(media => {
+
+      const id = String(media.post_id);
+
+      if(!mediaByPost[id]){
+        mediaByPost[id] = [];
+      }
+
+      mediaByPost[id].push(media);
+    });
+
+    allPosts = allPosts.map(post => ({
+
+      ...post,
+
+      media: mediaByPost[String(post.id)]?.length
+        ? mediaByPost[String(post.id)]
+        : [{
+            media_url: post.image_url,
+            media_type: "image",
+            sort_order: 0
+          }]
+
+    }));
+  }
 
   await checkAdmin();
 
-  filteredPosts =
-    [...allPosts];
+  filteredPosts = [...allPosts];
 
   renderPosts();
 }
