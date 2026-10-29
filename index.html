@@ -2121,7 +2121,10 @@ function openMedia(src){
   document
     .getElementById("mediaModal")
     .classList.add("show");
+
+  history.pushState({ mediaOpen: true }, "");
 }
+
 
 function closeMedia(){
 
@@ -2133,6 +2136,14 @@ function closeMedia(){
     .getElementById("mediaPreview")
     .innerHTML = "";
 }
+
+window.addEventListener("popstate", function () {
+  const modal = document.getElementById("mediaModal");
+
+  if (modal && modal.classList.contains("show")) {
+    closeMedia();
+  }
+});
 
 function openAdminModal(){
 
