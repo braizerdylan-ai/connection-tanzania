@@ -1,4 +1,4 @@
- f<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="sw">
 <head>
 <meta charset="UTF-8">
@@ -426,22 +426,7 @@ body.dark-mode .close-btn{
   object-fit:contain;
   display:block;
 }
-.connection-media-list {
-  display: block;
-  width: 100%;
-}
 
-.connection-media-list img,
-.connection-media-list video {
-  display: block;
-  position: static;
-  width: 100%;
-  height: 240px;
-  max-height: 240px;
-  object-fit: cover;
-  border-radius: 8px;
-}
-  
 .favorite-btn{
   position:absolute;
   top:9px;
@@ -716,67 +701,6 @@ body.admin-mode .add-button{
   display:block;
   border-radius:12px;
 }
-.media-gallery-content{
-  position:relative;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  width:100%;
-  height:100%;
-  gap:12px;
-}
-
-#mediaPreview{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  width:100%;
-  max-width:100%;
-  max-height:85vh;
-  touch-action:pan-y;
-}
-
-#mediaPreview img,
-#mediaPreview video{
-  display:block;
-  max-width:100%;
-  max-height:82vh;
-  width:auto;
-  height:auto;
-  object-fit:contain;
-  border-radius:10px;
-}
-
-.gallery-controls{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:18px;
-  color:white;
-}
-
-.gallery-controls button{
-  width:42px;
-  height:42px;
-  border:1px solid rgba(255,255,255,.35);
-  border-radius:50%;
-  background:rgba(255,255,255,.12);
-  color:white;
-  font-size:24px;
-  cursor:pointer;
-}
-
-.gallery-controls button:disabled{
-  opacity:.35;
-}
-
-#galleryCounter{
-  min-width:55px;
-  text-align:center;
-  font-size:13px;
-  font-weight:bold;
-} 
 
 .media-close{
   position:absolute;
@@ -1738,17 +1662,65 @@ body.admin-mode .admin-badge{
 
     <div class="form-group">
 
-      <label class="form-label">
-        Location
-      </label>
+  <label class="form-label">
+    Mkoa
+  </label>
 
-      <input
-        class="form-input"
-        id="postLocation"
-        placeholder="Mfano: Dar es Salaam"
-      >
+  <select
+    class="form-input"
+    id="postRegion"
+    required
+  >
+    <option value="">Chagua mkoa</option>
+    <option value="Dar es Salaam">Dar es Salaam</option>
+    <option value="Iringa">Iringa</option>
+    <option value="Dodoma">Dodoma</option>
+    <option value="Arusha">Arusha</option>
+    <option value="Mwanza">Mwanza</option>
+    <option value="Mbeya">Mbeya</option>
+    <option value="Morogoro">Morogoro</option>
+    <option value="Tanga">Tanga</option>
+    <option value="Kilimanjaro">Kilimanjaro</option>
+    <option value="Singida">Singida</option>
+    <option value="Tabora">Tabora</option>
+    <option value="Kigoma">Kigoma</option>
+    <option value="Ruvuma">Ruvuma</option>
+    <option value="Njombe">Njombe</option>
+    <option value="Lindi">Lindi</option>
+    <option value="Mtwara">Mtwara</option>
+    <option value="Pwani">Pwani</option>
+    <option value="Manyara">Manyara</option>
+    <option value="Mara">Mara</option>
+    <option value="Kagera">Kagera</option>
+    <option value="Geita">Geita</option>
+    <option value="Shinyanga">Shinyanga</option>
+    <option value="Simiyu">Simiyu</option>
+    <option value="Katavi">Katavi</option>
+    <option value="Rukwa">Rukwa</option>
+    <option value="Songwe">Songwe</option>
+    <option value="Pemba Kaskazini">Pemba Kaskazini</option>
+    <option value="Pemba Kusini">Pemba Kusini</option>
+    <option value="Unguja Kaskazini">Unguja Kaskazini</option>
+    <option value="Unguja Kusini">Unguja Kusini</option>
+    <option value="Mjini Magharibi">Mjini Magharibi</option>
+  </select>
 
-    </div>
+</div>
+
+<div class="form-group">
+
+  <label class="form-label">
+    Eneo / Mtaa
+  </label>
+
+  <input
+    class="form-input"
+    id="postLocation"
+    placeholder="Mfano: Sinza, Tabata, Mbezi"
+    required
+  >
+
+</div>
 
     <div class="form-group">
 
@@ -1795,7 +1767,22 @@ body.admin-mode .admin-badge{
 
     </div>
 
-    <button
+   <div class="form-group">
+  <label class="form-label">Aina ya Connection</label>
+
+  <label>
+    <input type="checkbox" id="postIsTrending">
+    Weka pia kwenye Trending
+  </label>
+
+  <label>
+    <input type="checkbox" id="postIsPremium">
+    Weka pia kwenye Premium
+  </label>
+
+  <small>Kila connection itaonekana Mpya moja kwa moja.</small>
+</div> 
+<button
       class="primary-btn"
       id="publishBtn"
       onclick="createPost()"
@@ -2083,214 +2070,76 @@ function closeModal(id){
     .getElementById(id)
     .classList.remove("show");
 }
-let galleryItems = [];
-let galleryIndex = 0;
+function openMedia(src){
 
-function openMedia(src, postId) {
-  const posts = Array.isArray(allPosts) ? allPosts : [];
-  const post = posts.find(p => String(p.id) === String(postId));
+  const preview =
+    document.getElementById("mediaPreview");
 
-  galleryItems =
-    post && Array.isArray(post.media)
-      ? post.media
-          .map(item => ({
-            media_url: item.media_url || item.url || item.image_url || "",
-            media_type: item.media_type || "",
-            sort_order: item.sort_order || 0
-          }))
-          .filter(item => item.media_url)
-      : [];
+  preview.innerHTML = "";
 
-  if (galleryItems.length === 0 && src) {
-    galleryItems = [{
-      media_url: src,
-      media_type: /\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(src)
-        ? "video"
-        : "image"
-    }];
+  if(
+    /\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(src)
+  ){
+
+    preview.innerHTML = `
+      <video
+        src="${escapeAttribute(src)}"
+        controls
+        autoplay
+        playsinline
+        style="
+          max-width:100%;
+          max-height:90vh;
+          width:auto;
+          height:auto;
+          object-fit:contain;
+          display:block;
+          border-radius:12px;
+        "
+      ></video>
+    `;
+
+  }else{
+
+    preview.innerHTML = `
+      <img
+        src="${escapeAttribute(src)}"
+        alt="Preview"
+        style="
+          width:auto;
+          height:auto;
+          max-width:100%;
+          max-height:90vh;
+          object-fit:contain;
+          display:block;
+          border-radius:12px;
+        "
+      >
+    `;
   }
 
-  galleryIndex = galleryItems.findIndex(
-    item => item.media_url === src
-  );
-
-  if (galleryIndex < 0) galleryIndex = 0;
-
-  const modal = document.getElementById("mediaModal");
-
-  if (!modal || galleryItems.length === 0) return;
-
-  showGalleryItem();
-  modal.classList.add("show");
-  document.body.style.overflow = "hidden";
+  document
+    .getElementById("mediaModal")
+    .classList.add("show");
 }
 
-function showGalleryItem() {
-  const preview = document.getElementById("mediaPreview");
-  const counter = document.getElementById("galleryCounter");
-  const previous = document.getElementById("galleryPrevious");
-  const next = document.getElementById("galleryNext");
-  const item = galleryItems[galleryIndex];
+function closeMedia(){
 
-  if (!preview || !item) return;
+  document
+    .getElementById("mediaModal")
+    .classList.remove("show");
 
-  const src = item.media_url;
-
-  const isVideo =
-    item.media_type === "video" ||
-    /\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(src);
-
-  const oldVideo = preview.querySelector("video");
-
-  if (oldVideo) {
-    oldVideo.pause();
-    oldVideo.removeAttribute("src");
-    oldVideo.load();
-  }
-
-  preview.replaceChildren();
-
-  if (isVideo) {
-    const video = document.createElement("video");
-    video.src = src;
-    video.controls = true;
-    video.playsInline = true;
-    video.preload = "metadata";
-    video.style.maxWidth = "100%";
-    video.style.maxHeight = "82vh";
-
-    preview.appendChild(video);
-  } else {
-    const img = document.createElement("img");
-    img.src = src;
-    img.alt = "Picha ya Connection Tanzania";
-    img.draggable = false;
-
-    preview.appendChild(img);
-  }
-
-  if (counter) {
-    counter.textContent =
-      `${galleryIndex + 1} / ${galleryItems.length}`;
-  }
-
-  if (previous) {
-    previous.disabled = galleryItems.length < 2;
-  }
-
-  if (next) {
-    next.disabled = galleryItems.length < 2;
-  }
+  document
+    .getElementById("mediaPreview")
+    .innerHTML = "";
 }
 
-function gallerySwipe(direction) {
-  if (galleryItems.length < 2) return;
+function openAdminModal(){
 
-  galleryIndex =
-    (galleryIndex + direction + galleryItems.length) %
-    galleryItems.length;
+  if(isAdmin){
 
-  showGalleryItem();
-}
-
-function closeMedia() {
-  const modal = document.getElementById("mediaModal");
-  const preview = document.getElementById("mediaPreview");
-
-  if (preview) {
-    const video = preview.querySelector("video");
-
-    if (video) {
-      video.pause();
-      video.removeAttribute("src");
-      video.load();
-    }
-
-    preview.replaceChildren();
-  }
-
-  if (modal) {
-    modal.classList.remove("show");
-  }
-
-  document.body.style.overflow = "";
-  galleryItems = [];
-  galleryIndex = 0;
-}
-
-/* Kutelezesha kidole kushoto au kulia kwenye simu */
-function setupGallerySwipe() {
-  const preview = document.getElementById("mediaPreview");
-
-  if (!preview || preview.dataset.swipeReady === "true") return;
-
-  preview.dataset.swipeReady = "true";
-
-  let startX = 0;
-  let startY = 0;
-
-  preview.addEventListener("touchstart", function(event) {
-    if (!event.touches.length) return;
-
-    startX = event.touches[0].clientX;
-    startY = event.touches[0].clientY;
-  }, { passive: true });
-
-  preview.addEventListener("touchend", function(event) {
-    if (!event.changedTouches.length) return;
-
-    const endX = event.changedTouches[0].clientX;
-    const endY = event.changedTouches[0].clientY;
-
-    const dx = endX - startX;
-    const dy = endY - startY;
-
-    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
-      gallerySwipe(dx < 0 ? 1 : -1);
-    }
-  }, { passive: true });
-}
-
-/* Modal iko chini ya script, hivyo subiri HTML ipakiwe */
-document.addEventListener("DOMContentLoaded", setupGallerySwipe);
-/* KITufe cha BACK cha CONNECTION TANZANIA */
-(function setupAppBackButton() {
-  window.isHandlingAppBack = false;
-
-  window.addEventListener("popstate", function (event) {
-    const mediaModal = document.getElementById("mediaModal");
-
-    if (mediaModal && mediaModal.classList.contains("show")) {
-      closeMedia();
-      return;
-    }
-
-    const openModalElement = document.querySelector(".modal.show");
-
-    if (openModalElement) {
-      openModalElement.classList.remove("show");
-      return;
-    }
-
-    if (event.state && event.state.connectionApp && event.state.view) {
-      window.isHandlingAppBack = true;
-
-      const previousView = event.state.view;
-
-      if (previousView === "home") showHome(null);
-      else if (previousView === "trending") showTrending(null);
-      else if (previousView === "premium") showPremium(null);
-      else if (previousView === "new") showNew(null);
-      else if (previousView === "favorites") showFavorites(null);
-
-      window.isHandlingAppBack = false;
-    }
-  });
-})();
-
-function openAdminModal() {
-  if (isAdmin) {
     adminLogout();
+
     return;
   }
 
@@ -2533,11 +2382,14 @@ async function loadPosts(){
         id,
         created_at,
         title,
+        region,
         location,
         description,
         image_url,
         unlock_price,
         is_new,
+        is_trending,
+        is_premium,
         user_id
       `)
       .order(
@@ -2558,55 +2410,12 @@ async function loadPosts(){
 
   allPosts = data || [];
 
-  const {data:mediaData,error:mediaError} =
-    await supabaseClient
-      .from("post_media")
-      .select("post_id,media_url,media_type,sort_order")
-      .order("sort_order",{ascending:true});
-
-  if(mediaError){
-
-    console.error(mediaError);
-
-    toast("Imeshindikana kusoma picha na video.");
-
-  }else{
-
-    const mediaByPost = {};
-
-    (mediaData || []).forEach(media => {
-
-      const id = String(media.post_id);
-
-      if(!mediaByPost[id]){
-        mediaByPost[id] = [];
-      }
-
-      mediaByPost[id].push(media);
-    });
-
-    allPosts = allPosts.map(post => ({
-
-      ...post,
-
-      media: mediaByPost[String(post.id)]?.length
-        ? mediaByPost[String(post.id)]
-        : [{
-            media_url: post.image_url,
-            media_type: "image",
-            sort_order: 0
-          }]
-
-    }));
-  }
-
   await checkAdmin();
 
   filteredPosts = [...allPosts];
 
   renderPosts();
 }
-
 /* =========================================================
    ADMIN PHONE
 ========================================================= */
@@ -2747,15 +2556,16 @@ async function renderPosts(){
 
   if(currentView === "trending"){
 
-    posts =
-      posts.slice(0,20);
-  }
+  posts =
+    posts.filter(
+      p => p.is_trending === true
+    );
+}
 if(currentView === "premium"){
 
   posts =
     posts.filter(
-      p =>
-        Number(p.unlock_price) > 0
+      p => p.is_premium === true
     );
 }
   if(posts.length === 0){
@@ -2820,51 +2630,44 @@ if(currentView === "premium"){
         String(post.id)
       );
 
-    const mediaItems =
-  Array.isArray(post.media) && post.media.length
-    ? post.media
-    : post.image_url
-      ? [{
-          media_url: post.image_url,
-          media_type: /\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(post.image_url)
-            ? "video"
-            : "image"
-        }]
-      : [];
+    const media =
+      post.image_url || "";
 
-let mediaHTML = "";
+    let mediaHTML = "";
 
-if (mediaItems.length) {
-  const firstMedia = mediaItems[0];
-  const firstUrl = firstMedia.media_url || "";
-  const firstIsVideo =
-    firstMedia.media_type === "video" ||
-    /\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(firstUrl);
+    if(
+      media.match(
+        /\.(mp4|webm|mov|m4v)(\?.*)?$/i
+      )
+    ){
 
-  mediaHTML = `
-    <div class="connection-media-list">
-      ${
-        firstIsVideo
-          ? `<video
-               src="${escapeAttribute(firstUrl)}"
-               controls
-               muted
-               playsinline
-               onclick="openMedia('${escapeAttribute(firstUrl)}', '${post.id}')"
-               style="cursor:pointer;width:100%;height:240px;object-fit:cover;border-radius:8px;"
-             ></video>`
-          : `<img
-               src="${escapeAttribute(firstUrl)}"
-               onclick="openMedia('${escapeAttribute(firstUrl)}', '${post.id}')"
-               style="cursor:pointer;width:100%;height:240px;object-fit:cover;border-radius:8px;"
-               alt="${escapeAttribute(post.title || "Connection")}"
-               loading="lazy"
-               onerror="this.style.display='none'"
-             >`
-      }
-    </div>
-  `;
-}
+      mediaHTML = `
+        <video
+  src="${escapeAttribute(media)}"
+  controls
+  muted
+  playsinline
+  onclick="openMedia('${escapeAttribute(media)}')"
+  style="cursor:pointer"
+></video>
+      `;
+
+    }else{
+
+      mediaHTML = `
+  <img
+    src="${escapeAttribute(media)}"
+    onclick="openMedia('${escapeAttribute(media)}')"
+    style="cursor:pointer"
+          alt="${escapeAttribute(
+            post.title ||
+            "Connection"
+          )}"
+          loading="lazy"
+          onerror="this.style.display='none'"
+        >
+      `;
+    }
 
     let actionHTML = "";
 
@@ -2972,17 +2775,23 @@ if (mediaItems.length) {
             "Connection"
           )}
         </div>
-<div class="premium-badge">
-  💎 PREMIUM
-</div>
-<div class="new-badge">
-  ✨ MPYA
-</div>
+${post.is_premium ? `
+          <div class="premium-badge">
+            💎 PREMIUM
+          </div>
+        ` : ""}
+
+        ${post.is_new ? `
+          <div class="new-badge">
+            ✨ MPYA
+          </div>
+        ` : ""}
         <div class="card-location">
           📍
           ${escapeHTML(
-            post.location ||
-            "Tanzania"
+            [post.region, post.location]
+              .filter(Boolean)
+              .join(" · ") || "Tanzania"
           )}
         </div>
 
@@ -3098,47 +2907,58 @@ function setActiveNav(id){
   }
 }
 
-function saveViewHistory() {
-  if (window.isHandlingAppBack) return;
+function showHome(el){
 
-  history.pushState(
-    {
-      connectionApp: true,
-      view: currentView
-    },
-    "",
-    location.href
-  );
-}
+  currentView =
+    "home";
 
-function showHome(el) {
-  saveViewHistory();
-
-  currentView = "home";
   setActiveCategory(el);
-  setActiveNav("navHome");
 
-  document.getElementById("postsHeading").textContent =
-    "Connection mpya";
+  setActiveNav(
+    "navHome"
+  );
 
-  document.getElementById("postsSubheading").textContent =
-    "Chagua connection unayoipenda";
+  document
+    .getElementById(
+      "postsHeading"
+    )
+    .textContent =
+      "Connection mpya";
+
+  document
+    .getElementById(
+      "postsSubheading"
+    )
+    .textContent =
+      "Chagua connection unayoipenda";
 
   renderPosts();
 }
 
-function showTrending(el) {
-  saveViewHistory();
+function showTrending(el){
 
-  currentView = "trending";
+  currentView =
+    "trending";
+
   setActiveCategory(el);
-  setActiveNav("navTrending");
 
-  document.getElementById("postsHeading").textContent =
-    "Trending";
+  setActiveNav(
+    "navTrending"
+  );
 
-  document.getElementById("postsSubheading").textContent =
-    "Connections zinazovuma";
+  document
+    .getElementById(
+      "postsHeading"
+    )
+    .textContent =
+      "Trending";
+
+  document
+    .getElementById(
+      "postsSubheading"
+    )
+    .textContent =
+      "Connections zinazovuma";
 
   renderPosts();
 }
@@ -3169,34 +2989,58 @@ function showPremium(el){
 
   renderPosts();
 }
-function showNew(el) {
-  saveViewHistory();
+function showNew(el){
 
-  currentView = "new";
+  currentView =
+    "new";
+
   setActiveCategory(el);
-  setActiveNav("navNew");
 
-  document.getElementById("postsHeading").textContent =
-    "Mpya";
+  setActiveNav(
+    "navNew"
+  );
 
-  document.getElementById("postsSubheading").textContent =
-    "Connections zilizowekwa hivi karibuni";
+  document
+    .getElementById(
+      "postsHeading"
+    )
+    .textContent =
+      "Mpya";
+
+  document
+    .getElementById(
+      "postsSubheading"
+    )
+    .textContent =
+      "Connections zilizowekwa hivi karibuni";
 
   renderPosts();
 }
 
-function showFavorites(el) {
-  saveViewHistory();
+function showFavorites(el){
 
-  currentView = "favorites";
+  currentView =
+    "favorites";
+
   setActiveCategory(el);
-  setActiveNav("navFavorites");
 
-  document.getElementById("postsHeading").textContent =
-    "Favorites";
+  setActiveNav(
+    "navFavorites"
+  );
 
-  document.getElementById("postsSubheading").textContent =
-    "Connections ulizozipenda";
+  document
+    .getElementById(
+      "postsHeading"
+    )
+    .textContent =
+      "Favorites";
+
+  document
+    .getElementById(
+      "postsSubheading"
+    )
+    .textContent =
+      "Connections ulizozipenda";
 
   renderPosts();
 }
@@ -3697,41 +3541,48 @@ async function createPost(){
     return;
   }
 
-  const title = document.getElementById("postTitle").value.trim();
-  const location = document.getElementById("postLocation").value.trim();
-  const description = document.getElementById("postDescription").value.trim();
-  const phone = document.getElementById("postPhone").value.trim();
-  const files = Array.from(document.getElementById("postFile").files);
+  const title =
+    document.getElementById("postTitle").value.trim();
 
-  if(!title || !location || !phone || files.length === 0){
-    toast("Jaza title, location, namba na media.");
+  const region =
+    document.getElementById("postRegion").value;
+
+  const location =
+    document.getElementById("postLocation").value.trim();
+
+  const description =
+    document.getElementById("postDescription").value.trim();
+
+  const phone =
+    document.getElementById("postPhone").value.trim();
+
+  const file =
+    document.getElementById("postFile").files[0];
+
+  if(!title || !region || !location || !phone || !file){
+    toast("Jaza jina, mkoa, eneo/mtaa, namba na media.");
     return;
   }
 
-  const images = files.filter(file => file.type.startsWith("image/"));
-  const videos = files.filter(file => file.type.startsWith("video/"));
+  const publishBtn =
+    document.getElementById("publishBtn");
 
-  if(images.length > 3 || videos.length > 1 || images.length + videos.length !== files.length){
-    toast("Chagua picha zisizozidi 3 na video 1 pekee.");
-    return;
-  }
-
-  const publishBtn = document.getElementById("publishBtn");
   publishBtn.disabled = true;
   publishBtn.textContent = "Inapakia...";
 
   try{
 
-    const uploadedMedia = [];
+    const extension =
+      file.name.split(".").pop().toLowerCase();
 
-    for(let i = 0; i < files.length; i++){
+    const fileName =
+      `${Date.now()}_${Math.random().toString(36).slice(2)}.${extension}`;
 
-      const file = files[i];
-      const extension = file.name.split(".").pop().toLowerCase();
-      const fileName = `${Date.now()}_${i}_${Math.random().toString(36).slice(2)}.${extension}`;
-      const filePath = `connections/${fileName}`;
+    const filePath =
+      `connections/${fileName}`;
 
-      const upload = await supabaseClient
+    const upload =
+      await supabaseClient
         .storage
         .from("media")
         .upload(filePath, file, {
@@ -3739,79 +3590,85 @@ async function createPost(){
           contentType: file.type
         });
 
-      if(upload.error) throw upload.error;
+    if(upload.error){
+      throw upload.error;
+    }
 
-      const publicResult = supabaseClient
+    const publicResult =
+      supabaseClient
         .storage
         .from("media")
         .getPublicUrl(filePath);
 
-      uploadedMedia.push({
-        media_url: publicResult.data.publicUrl,
-        media_type: file.type.startsWith("video/") ? "video" : "image",
-        sort_order: i
-      });
+    const image_url =
+      publicResult.data.publicUrl;
+
+    const postResult =
+      await supabaseClient
+        .from("post")
+        .insert({
+          title: title,
+          region: region,
+          location: location,
+          description: description,
+          image_url: image_url,
+          unlock_price: 10000,
+          is_new: true,
+          is_trending: document.getElementById("postIsTrending").checked,
+          is_premium: document.getElementById("postIsPremium").checked,
+          user_id: null
+        })
+        .select()
+        .single();
+
+    if(postResult.error){
+      throw postResult.error;
     }
-
-    const postResult = await supabaseClient
-      .from("post")
-      .insert({
-        title,
-        location,
-        description,
-        image_url: uploadedMedia[0].media_url,
-        unlock_price: 10000,
-        is_new: true,
-        user_id: null
-      })
-      .select()
-      .single();
-
-    if(postResult.error) throw postResult.error;
 
     const postId = postResult.data.id;
 
-    const mediaRows = uploadedMedia.map(media => ({
-      post_id: postId,
-      media_url: media.media_url,
-      media_type: media.media_type,
-      sort_order: media.sort_order
-    }));
+    const contactResult =
+      await supabaseClient
+        .from("post_contacts")
+        .insert({
+          post_id: postId,
+          phone: phone
+        });
 
-    const mediaResult = await supabaseClient
-      .from("post_media")
-      .insert(mediaRows);
-
-    if(mediaResult.error) throw mediaResult.error;
-
-    const contactResult = await supabaseClient
-      .from("post_contacts")
-      .insert({
-        post_id: postId,
-        phone: phone
-      });
-
-    if(contactResult.error) throw contactResult.error;
+    if(contactResult.error){
+      throw contactResult.error;
+    }
 
     document.getElementById("postTitle").value = "";
+    document.getElementById("postRegion").value = "";
     document.getElementById("postLocation").value = "";
     document.getElementById("postDescription").value = "";
     document.getElementById("postPhone").value = "";
     document.getElementById("postFile").value = "";
 
+    document.getElementById("postIsTrending").checked = false;
+    document.getElementById("postIsPremium").checked = false;
+
     closeModal("postModal");
+
     toast("Connection imewekwa.");
+
     await loadPosts();
 
   }catch(error){
 
     console.error(error);
-    toast(error.message || "Imeshindikana kuweka connection.");
+
+    toast(
+      error.message ||
+      "Imeshindikana kuweka connection."
+    );
 
   }finally{
 
     publishBtn.disabled = false;
     publishBtn.textContent = "Publish Connection";
+
   }
 }
 
@@ -4021,43 +3878,20 @@ document
   id="mediaModal"
   onclick="closeMedia()"
 >
+
   <button
     class="media-close"
-    type="button"
-    aria-label="Funga gallery"
     onclick="event.stopPropagation(); closeMedia()"
   >
     ×
   </button>
 
   <div
-    class="media-gallery-content"
-    onclick="event.stopPropagation()"
-  >
-    <div id="mediaPreview"></div>
+  id="mediaPreview"
+  onclick="event.stopPropagation()"
+></div>
+  
 
-    <div class="gallery-controls">
-      <button
-        id="galleryPrevious"
-        type="button"
-        aria-label="Media iliyotangulia"
-        onclick="gallerySwipe(-1)"
-      >
-        ‹
-      </button>
-
-      <span id="galleryCounter">0 / 0</span>
-
-      <button
-        id="galleryNext"
-        type="button"
-        aria-label="Media inayofuata"
-        onclick="gallerySwipe(1)"
-      >
-        ›
-      </button>
-    </div>
-  </div>
 </div>
 </body>
 </html>
